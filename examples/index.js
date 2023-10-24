@@ -26,9 +26,16 @@ function createScene() {
         const geom = new THREE.BufferGeometry();
         const vertices = Kubiki.createWalls(room);
         geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        const mat = new THREE.MeshBasicMaterial({color: 'green', side: THREE.DoubleSide});
+        geom.computeVertexNormals();
+        const mat = new THREE.MeshLambertMaterial({color: 0x33ff33, side: THREE.DoubleSide});
         return new THREE.Mesh(geom, mat);
     })());
+
+    const light = new THREE.DirectionalLight(0xffffff, 1.0);
+
+    light.position.set(-8, 30, 10);
+    light.target.position.set(0, 0, 0);
+    scene.add(light);
 
     return scene;
 }
@@ -38,6 +45,7 @@ function init({
         size,
     }) {
     const renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor(0x99aaff);
     renderer.setSize(size.width, size.height);
     container.appendChild(renderer.domElement);
 

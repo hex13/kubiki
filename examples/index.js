@@ -9,27 +9,43 @@ function createScene() {
     //     const mat = new THREE.MeshBasicMaterial({color: 'red'});
     //     return new THREE.Mesh(geom, mat);
     // })());
-    const room = {
-        width: 8,
-        height: 5,
-    };
+    const rooms = [
+        {
+            width: 8,
+            height: 5,
+            position: {
+                x: 3,
+                z: -3,
+            }
+        },
+        {
+            width: 4,
+            height: 4,
+            position: {
+                x: -7,
+                z: -3,
+            }
+        },
+    ]
 
-    scene.add((() => {
-        const geom = new THREE.BufferGeometry();
-        const vertices = Kubiki.createFloor(room);
-        geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        const mat = new THREE.MeshBasicMaterial({color: 'red'});
-        return new THREE.Mesh(geom, mat);
-    })());
+    rooms.forEach(room => {
+        scene.add((() => {
+            const geom = new THREE.BufferGeometry();
+            const vertices = Kubiki.createFloor(room);
+            geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+            const mat = new THREE.MeshBasicMaterial({color: 'red'});
+            return new THREE.Mesh(geom, mat);
+        })());
+        scene.add((() => {
+            const geom = new THREE.BufferGeometry();
+            const vertices = Kubiki.createWalls(room);
+            geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+            geom.computeVertexNormals();
+            const mat = new THREE.MeshLambertMaterial({color: 0x33ff33, side: THREE.DoubleSide});
+            return new THREE.Mesh(geom, mat);
+        })());
+    })
 
-    scene.add((() => {
-        const geom = new THREE.BufferGeometry();
-        const vertices = Kubiki.createWalls(room);
-        geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        geom.computeVertexNormals();
-        const mat = new THREE.MeshLambertMaterial({color: 0x33ff33, side: THREE.DoubleSide});
-        return new THREE.Mesh(geom, mat);
-    })());
 
     const light = new THREE.DirectionalLight(0xffffff, 1.0);
 

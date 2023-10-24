@@ -9,14 +9,24 @@ function createScene() {
     //     const mat = new THREE.MeshBasicMaterial({color: 'red'});
     //     return new THREE.Mesh(geom, mat);
     // })());
+    const room = {
+        width: 8,
+        height: 5,
+    };
+
     scene.add((() => {
         const geom = new THREE.BufferGeometry();
-        const vertices = Kubiki.createFloor({
-            width: 5,
-            height: 5,
-        });
+        const vertices = Kubiki.createFloor(room);
         geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         const mat = new THREE.MeshBasicMaterial({color: 'red'});
+        return new THREE.Mesh(geom, mat);
+    })());
+
+    scene.add((() => {
+        const geom = new THREE.BufferGeometry();
+        const vertices = Kubiki.createWalls(room);
+        geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        const mat = new THREE.MeshBasicMaterial({color: 'green', side: THREE.DoubleSide});
         return new THREE.Mesh(geom, mat);
     })());
 

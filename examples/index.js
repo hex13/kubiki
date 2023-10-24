@@ -12,18 +12,18 @@ function createScene() {
     const rooms = [
         {
             width: 8,
-            height: 5,
+            height: 4,
             position: {
-                x: 3,
-                z: -3,
+                x: 0,
+                z: 0,
             }
         },
         {
             width: 4,
-            height: 4,
+            height: 6,
             position: {
-                x: -7,
-                z: -3,
+                x: -4,
+                z: 0,
             }
         },
     ]

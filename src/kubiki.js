@@ -1,8 +1,8 @@
 export function createFloor(room) {
-    const left = room.position.x - room.width / 2;
-    const right = room.position.x + room.width / 2;
-    const top = room.position.z - room.height / 2;
-    const bottom = room.position.z + room.height / 2;
+    const left = room.position.x;
+    const right = room.position.x + room.width;
+    const top = room.position.z - room.height;
+    const bottom = room.position.z;
 
     return new Float32Array([
         left, 0, top,
@@ -18,8 +18,8 @@ export function createFloor(room) {
 
 export function createWalls(room) {
     const vertices = [];
-    let x = room.position.x - room.width / 2;
-    let z = room.position.z + room.height / 2;
+    let x = room.position.x;
+    let z = room.position.z;
     let angle = 0;
 
     const createWall = (length, turn, isBreak = false) => {

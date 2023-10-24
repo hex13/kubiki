@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as Kubiki from '../src/kubiki.js';
 
 function createScene() {
@@ -36,13 +37,27 @@ function init({
 
     const scene = createScene();
 
-    renderer.render(scene, camera);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    return {
+        renderer,
+        controls,
+        scene,
+        camera,
+    }
 }
 
-init({
+function loop() {
+    app.renderer.render(app.scene, app.camera);
+
+    requestAnimationFrame(loop);
+}
+
+const app = init({
     container: document.body,
     size: {
         width: 1024,
         height: 768,
     },
 });
+
+loop();

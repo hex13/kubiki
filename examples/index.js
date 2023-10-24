@@ -1,9 +1,20 @@
 import * as THREE from '../node_modules/three/src/Three.js';
+import * as Kubiki from '../src/kubiki.js';
 
 function createScene() {
     const scene = new THREE.Scene();
+    // scene.add((() => {
+    //     const geom = new THREE.BoxGeometry(1, 1, 1);
+    //     const mat = new THREE.MeshBasicMaterial({color: 'red'});
+    //     return new THREE.Mesh(geom, mat);
+    // })());
     scene.add((() => {
-        const geom = new THREE.BoxGeometry(1, 1, 1);
+        const geom = new THREE.BufferGeometry();
+        const vertices = Kubiki.createFloor({
+            width: 5,
+            height: 5,
+        });
+        geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         const mat = new THREE.MeshBasicMaterial({color: 'red'});
         return new THREE.Mesh(geom, mat);
     })());

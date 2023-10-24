@@ -5,6 +5,7 @@
   "description": "Geometry helpers for Three.js",
   "main": "index.js",
   "scripts": {
+    "build": "esbuild --bundle examples/index.js --outfile=examples/bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Łukasz Lityński",

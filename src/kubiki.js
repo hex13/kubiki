@@ -15,6 +15,15 @@ export function createFloor(room) {
     ]);
 }
 
+export class Doors extends Array {
+    constructor(bottom = [], right = [], top = [], left = []) {
+        super();
+        this.push(bottom);
+        this.push(right);
+        this.push(top);
+        this.push(left);
+    }
+}
 
 export function createWalls(room) {
     const vertices = [];
@@ -22,7 +31,10 @@ export function createWalls(room) {
     let z = room.position.z;
     let angle = 0;
 
-    const createWall = (length, turn, isBreak = false) => {
+    const floor = 0;
+    const ceiling = 1;
+
+    const createSegment = (length, turn, isBreak = false) => {
         angle += turn;
         const nextX = x + length * Math.cos(angle);
         const nextZ = z + length * Math.sin(angle);
@@ -39,18 +51,29 @@ export function createWalls(room) {
         }
         x = nextX;
         z = nextZ;
+    };
+
+    const createWall = (length, doors) => {
+        const segments = [{offset: 0, width: length}];
+        for (let i = 0; i < doors.length; i++) {
+            const door = doors[i];
+            const prev = segments.pop();
+
+            segments.push({offset: prev.offset, width: door.offset - prev.offset });
+            segments.push({...door, isBreak: true});
+            segments.push({offset: door.offset + door.width, width: prev.width - (door.offset - prev.offset) - door.width });
+        }
+
+        segments.forEach((segment, i) => {
+            createSegment(segment.width, 0, !!segment.isBreak);
+        });
+
     }
-    const floor = 0;
-    const ceiling = 1;
-    const length = room.width;
-    const doorOffset = 1;
-    const doorWidth = 1;
-    createWall(doorOffset, 0);
-    createWall(doorWidth, 0, true);
-    createWall(length - doorWidth - doorOffset, 0);
-    createWall(room.height, - Math.PI * 0.5);
-    createWall(room.width, - Math.PI * 0.5);
-    createWall(room.height, - Math.PI * 0.5);
+
+    for (let i = 0; i < 4; i++) {
+        createWall(i % 2 == 0? room.width : room.height, room.doors[i]);
+        angle -= Math.PI * 0.5;
+    }
 
     return new Float32Array(vertices);
 }

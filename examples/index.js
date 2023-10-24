@@ -16,15 +16,24 @@ function createScene() {
             position: {
                 x: 0,
                 z: 0,
-            }
+            },
+            doors: new Kubiki.Doors(
+                [{offset: 0.5, width: 1}, {offset: 3, width: 1}, {offset:5, width: 0.4}],
+            ),
         },
         {
             width: 4,
-            height: 6,
+            height: 4,
             position: {
                 x: -4,
                 z: 0,
-            }
+            },
+            doors: new Kubiki.Doors(
+                [],
+                [],
+                [{offset: 0.5, width: 0.5}],
+                [{offset: 0.5, width: 1.5}],
+            ),
         },
     ]
 

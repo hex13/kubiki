@@ -22,5 +22,10 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+        "no-console": 1,
+        "no-empty-function": 1,
+        "indent": ["warn", 4],
+        "no-multi-spaces": 1,
+        "no-trailing-spaces": 1,
     }
 }

@@ -66,9 +66,9 @@ function createScene() {
 }
 
 function init({
-        container,
-        size,
-    }) {
+    container,
+    size,
+}) {
     const renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(0x99aaff);
     renderer.setSize(size.width, size.height);

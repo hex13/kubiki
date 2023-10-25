@@ -31,10 +31,8 @@ export function createWalls(room) {
     let z = room.position.z;
     let angle = 0;
 
-    const floor = 0;
-    const ceiling = 1;
+    const createSegment = (length, turn, isBreak = false, floor = 0, ceiling = 1) => {
 
-    const createSegment = (length, turn, isBreak = false) => {
         angle += turn;
         const nextX = x + length * Math.cos(angle);
         const nextZ = z + length * Math.sin(angle);
@@ -65,7 +63,14 @@ export function createWalls(room) {
         }
 
         segments.forEach((segment, i) => {
-            createSegment(segment.width, 0, !!segment.isBreak);
+            const lastX = x;
+            const lastZ = z;
+            createSegment(segment.width, 0, false, segment.isBreak? 0.9 : 0.0);
+            if (segment.isBreak) {
+                x = lastX;
+                z = lastZ;
+                createSegment(segment.width, 0, false, 0, 0.1);
+            }
         });
 
     }

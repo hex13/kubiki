@@ -62,7 +62,7 @@ export function createWalls(room) {
             segments.push({offset: door.offset + door.width, width: prev.width - (door.offset - prev.offset) - door.width });
         }
 
-        segments.forEach((segment, i) => {
+        segments.forEach((segment) => {
             const lastX = x;
             const lastZ = z;
             createSegment(segment.width, 0, false, segment.isBreak? 0.9 : 0.0);

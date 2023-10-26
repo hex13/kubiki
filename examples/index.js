@@ -19,22 +19,39 @@ function createScene() {
             },
             doors: new Kubiki.Doors(
                 [{offset: 0.5, width: 1}, {offset: 3, width: 1}, {offset:5, width: 0.4}],
+                [],
+                [],
+                [{offset: 2.5, width: 1}],
             ),
         },
         {
             width: 4,
             height: 4,
             position: {
-                x: -4,
+                x: -4.4,
                 z: 0,
             },
             doors: new Kubiki.Doors(
                 [],
-                [],
+                [{offset: 0.5, width: 1}],
                 [{offset: 0.5, width: 0.5}],
                 [{offset: 0.5, width: 1.5}],
             ),
         },
+        {
+            width: 4,
+            height: 4,
+            position: {
+                x: -4.4,
+                z: -5,
+            },
+            doors: new Kubiki.Doors(
+                [],
+                [{offset: 0.5, width: 1}],
+                [{offset: 0.5, width: 0.5}],
+                [{offset: 0.5, width: 1.5}],
+            ),
+        }
     ]
 
     rooms.forEach(room => {
@@ -42,7 +59,8 @@ function createScene() {
             const geom = new THREE.BufferGeometry();
             const vertices = Kubiki.createFloor(room);
             geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-            const mat = new THREE.MeshBasicMaterial({color: 'red'});
+            geom.computeVertexNormals();
+            const mat = new THREE.MeshLambertMaterial({color: '#aaaaaa'});
             return new THREE.Mesh(geom, mat);
         })());
         scene.add((() => {

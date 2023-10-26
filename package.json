@@ -1,7 +1,7 @@
 {
   "name": "kubiki",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Geometry helpers for Three.js",
   "main": "index.js",
   "scripts": {

@@ -9,4 +9,4 @@ API is non stable
 
 Features are lacking
 
-Take a look on `examples`` folder
+Take a look on `examples` folder

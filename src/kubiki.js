@@ -98,7 +98,6 @@ class Kubiki {
 		gl.clear(this.gl.COLOR_BUFFER_BIT);
 
 		this.objects.forEach(obj => {
-			console.log("OBJ",obj)
 			const dimensions = 2;
 			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
 			const uPosition = gl.getUniformLocation(this.program, 'uPosition');

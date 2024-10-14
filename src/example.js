@@ -1,13 +1,15 @@
 import * as K from './kubiki.js';
 
-K.init({width: 1024, height: 768, background: [0, 0, 0.4, 1]})
+const box = K.box().position(-1.4, 0);
+const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0.4, 1]})
 	.mount(document.body)
-	.add(K.box().position(-1.4, 0))
+	.add(box)
 	.add(K.box().position(1.4, 0))
 	.add(K.triangle())
-	.add(K.triangle().position(0, -2.0))
-	.render()
+	.add(K.triangle().position(0, -2.0));
 
+setInterval(() => {
+	box.position(x => x + 0.01, y => y - 0.02);
+	kubiki.render()
+}, 16);
 
-			// {position: [0, -1.3], geometry: triangleGeometry},
-			// {position: [-1.3, 0], geometry: boxGeometry},

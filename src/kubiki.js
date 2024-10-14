@@ -1,5 +1,15 @@
+import { SceneObject } from './SceneObject.js';
+
 export function init(params) {
 	return new Kubiki(params);
+}
+
+export function box() {
+	return new SceneObject(boxGeometry);
+}
+
+export function triangle() {
+	return new SceneObject(triangleGeometry);
 }
 
 
@@ -71,11 +81,11 @@ class Kubiki {
 		this.program = program;
 		this.gl = gl;
 		this.params = params;
-		this.objects = [
-			{position: [0, 0], geometry: boxGeometry},
-			{position: [0, -1.3], geometry: triangleGeometry},
-			{position: [-1.3, 0], geometry: boxGeometry},
-		];
+		this.objects = [];
+	}
+	add(obj) {
+		this.objects.push(obj);
+		return this;
 	}
 	mount(domEl) {
 		console.log("mounted", domEl, this.canvas)
@@ -88,12 +98,13 @@ class Kubiki {
 		gl.clear(this.gl.COLOR_BUFFER_BIT);
 
 		this.objects.forEach(obj => {
+			console.log("OBJ",obj)
 			const dimensions = 2;
 			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
 			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
 			gl.useProgram(this.program);
 			if (dimensions == 2) {
-				gl.uniform2f(uPosition, ...obj.position);
+				gl.uniform2f(uPosition, ...obj.transform.position);
 			} else throw new Error('not implemented for dimensions != 2');
 			const buffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);

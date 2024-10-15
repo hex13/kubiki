@@ -1,7 +1,7 @@
 export class SceneObject {
 	transform = {
 		position: [0, 0, 0, 1],
-		scale: [0.3, 0.3, 1],
+		scale: [1, 1, 1],
 	};
 	constructor(geometry) {
 		this.geometry = geometry;

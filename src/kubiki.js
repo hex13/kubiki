@@ -1,11 +1,15 @@
 import { SceneObject } from './SceneObject.js';
-import { triangleGeometry, boxGeometry } from './geometries.js';
+import { triangleGeometry, rectGeometry, boxGeometry } from './geometries.js';
 import { vertexShaderSource, fragmentShaderSource } from './shaders.js';
 
 import { mat4 } from 'gl-matrix';
 
 export function init(params) {
 	return new Kubiki(params);
+}
+
+export function rect() {
+	return new SceneObject(rectGeometry);
 }
 
 export function box() {

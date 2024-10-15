@@ -53,6 +53,13 @@ class Kubiki {
 		this.program = program;
 		this.gl = gl;
 		this.params = params;
+		this.projection = mat4.create();
+		const viewMatrix = mat4.create();
+		mat4.translate(viewMatrix, viewMatrix, [0, 0, -10]);
+		mat4.perspective(this.projection, 80, params.width/params.height, 0.001, 100);
+		mat4.mul(this.projection, this.projection, viewMatrix);
+
+
 		this.objects = [];
 	}
 	add(obj) {
@@ -74,12 +81,14 @@ class Kubiki {
 			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
 			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
 			const uTransform = gl.getUniformLocation(this.program, 'uTransform');
+			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
 			gl.useProgram(this.program);
 			const transform = mat4.create();
 			mat4.scale(transform, transform, obj.transform.scale);
 			mat4.translate(transform, transform, obj.transform.position);
 
 			gl.uniformMatrix4fv(uTransform, false, transform);
+			gl.uniformMatrix4fv(uProjection, false, this.projection);
 			const buffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 			gl.bufferData(gl.ARRAY_BUFFER, obj.geometry, gl.STATIC_DRAW);

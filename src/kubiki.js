@@ -90,6 +90,7 @@ class Kubiki {
 		this.objects.forEach(obj => {
 			const dimensions = 3;
 			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
+			const aNormal = gl.getAttribLocation(this.program, 'aNormal');
 			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
 			const uTransform = gl.getUniformLocation(this.program, 'uTransform');
 			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
@@ -100,11 +101,22 @@ class Kubiki {
 			gl.uniformMatrix4fv(uTransform, false, transform);
 			gl.uniformMatrix4fv(uProjection, false, this.projection);
 			gl.uniformMatrix4fv(uView, false, this.viewMatrix);
+
 			const buffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 			gl.bufferData(gl.ARRAY_BUFFER, obj.geometry.vertices, gl.STATIC_DRAW);
 			gl.enableVertexAttribArray(aPosition);
 			gl.vertexAttribPointer(aPosition, dimensions, gl.FLOAT, false, 0, 0);
+
+			if (obj.geometry.normals) {
+				const buffer = gl.createBuffer();
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+				gl.bufferData(gl.ARRAY_BUFFER, obj.geometry.normals, gl.STATIC_DRAW);
+				gl.enableVertexAttribArray(aNormal);
+				gl.vertexAttribPointer(aNormal, dimensions, gl.FLOAT, false, 0, 0);
+			}
+
+
 			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
 		});
 		return this;

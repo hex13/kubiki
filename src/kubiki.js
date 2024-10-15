@@ -2,6 +2,8 @@ import { SceneObject } from './SceneObject.js';
 import { triangleGeometry, boxGeometry } from './geometries.js';
 import { vertexShaderSource, fragmentShaderSource } from './shaders.js';
 
+import { mat4 } from 'gl-matrix';
+
 export function init(params) {
 	return new Kubiki(params);
 }
@@ -71,10 +73,13 @@ class Kubiki {
 			const dimensions = 2;
 			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
 			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
+			const uTransform = gl.getUniformLocation(this.program, 'uTransform');
 			gl.useProgram(this.program);
-			if (dimensions == 2) {
-				gl.uniform2f(uPosition, ...obj.transform.position);
-			} else throw new Error('not implemented for dimensions != 2');
+			const transform = mat4.create();
+			mat4.scale(transform, transform, obj.transform.scale);
+			mat4.translate(transform, transform, obj.transform.position);
+
+			gl.uniformMatrix4fv(uTransform, false, transform);
 			const buffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 			gl.bufferData(gl.ARRAY_BUFFER, obj.geometry, gl.STATIC_DRAW);

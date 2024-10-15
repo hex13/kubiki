@@ -62,15 +62,15 @@ class Kubiki {
 		this.projection = mat4.create();
 
 		this.camera = new SceneObject().position(0, 0, 10);
+		this.viewMatrix = mat4.create();
 		this.#computeCamera();
 		mat4.perspective(this.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 
 		this.objects = [];
 	}
 	#computeCamera() {
-		this.viewMatrix = mat4.create();
-		mat4.translate(this.viewMatrix, this.viewMatrix, this.camera.transform.position);
-		mat4.invert(this.viewMatrix, this.viewMatrix);
+		this.camera.computeMatrix();
+		mat4.invert(this.viewMatrix, this.camera.transform.matrix);
 	}
 	add(obj) {
 		this.objects.push(obj);

@@ -1,7 +1,7 @@
 import * as K from './kubiki.js';
 
 const rect = K.rect().position(-1.4, 0, 0);
-const box = K.box().position(-3, 5, -4);
+const box = K.box().position(-3, 5, 0);
 const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0.4, 1]})
 	.mount(document.body)
 	.add(rect)
@@ -11,9 +11,10 @@ const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0.4, 1]})
 	// .add(K.triangle().position(0, -2.0));
 
 function update(t) {
-	rect.position(x => x + 0.04, y => y, z => z);
-	box.position(x => x + 0.04, y => Math.sin(t * 0.003) * 5, z => z);
+	// rect.position(x => x + 0.04, y => y, z => z);
+	// box.position(x => Math.cos(t * 0.002) * 4, y => Math.sin(t * 0.003) * 5, z => z);
 	kubiki.render(t);
+	kubiki.camera.position(0, 0, Math.sin(t * 0.001) * 5 + 10)
 	requestAnimationFrame(update);
 }
 

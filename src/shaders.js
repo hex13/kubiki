@@ -1,13 +1,14 @@
 export const vertexShaderSource = `
 precision mediump float;
 attribute vec3 aPosition;
-uniform vec3 uPosition;
+uniform vec2 uPosition;
 uniform mat4 uTransform;
 uniform mat4 uProjection;
+uniform mat4 uView;
 varying vec3 vPosition;
 #define SCALE 0.5
 void main() {
-	gl_Position = uProjection * uTransform * vec4(aPosition, 1.0);
+	gl_Position = uProjection * uView * uTransform * vec4(aPosition, 1.0);
 	vPosition = aPosition;
 }
 `;

@@ -60,15 +60,17 @@ class Kubiki {
 		this.gl = gl;
 		this.params = params;
 		this.projection = mat4.create();
-		const viewMatrix = mat4.create();
-		mat4.translate(viewMatrix, viewMatrix, [0, 0, 10]);
-		mat4.invert(viewMatrix, viewMatrix);
-		mat4.perspective(this.projection, Math.PI / 3, params.width/params.height, 0.001, 100);
 
-		mat4.mul(this.projection, this.projection, viewMatrix);
-
+		this.camera = new SceneObject().position(0, 0, 10);
+		this.#computeCamera();
+		mat4.perspective(this.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 
 		this.objects = [];
+	}
+	#computeCamera() {
+		this.viewMatrix = mat4.create();
+		mat4.translate(this.viewMatrix, this.viewMatrix, this.camera.transform.position);
+		mat4.invert(this.viewMatrix, this.viewMatrix);
 	}
 	add(obj) {
 		this.objects.push(obj);
@@ -80,6 +82,7 @@ class Kubiki {
 		return this;
 	}
 	render(t) {
+		this.#computeCamera();
 		const { gl, params } = this;
 		gl.clearColor(...params.background);
 		gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -90,6 +93,7 @@ class Kubiki {
 			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
 			const uTransform = gl.getUniformLocation(this.program, 'uTransform');
 			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
+			const uView = gl.getUniformLocation(this.program, 'uView');
 			gl.useProgram(this.program);
 			const transform = mat4.create();
 			mat4.scale(transform, transform, obj.transform.scale);
@@ -97,6 +101,7 @@ class Kubiki {
 			mat4.rotate(transform, transform, t * 0.002, [0, 1, 0]);
 			gl.uniformMatrix4fv(uTransform, false, transform);
 			gl.uniformMatrix4fv(uProjection, false, this.projection);
+			gl.uniformMatrix4fv(uView, false, this.viewMatrix);
 			const buffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 			gl.bufferData(gl.ARRAY_BUFFER, obj.geometry, gl.STATIC_DRAW);

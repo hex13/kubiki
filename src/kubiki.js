@@ -102,10 +102,10 @@ class Kubiki {
 			gl.uniformMatrix4fv(uView, false, this.viewMatrix);
 			const buffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-			gl.bufferData(gl.ARRAY_BUFFER, obj.geometry, gl.STATIC_DRAW);
+			gl.bufferData(gl.ARRAY_BUFFER, obj.geometry.vertices, gl.STATIC_DRAW);
 			gl.enableVertexAttribArray(aPosition);
 			gl.vertexAttribPointer(aPosition, dimensions, gl.FLOAT, false, 0, 0);
-			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.length / dimensions);
+			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
 		});
 		return this;
 	}

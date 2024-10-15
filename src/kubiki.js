@@ -71,7 +71,7 @@ class Kubiki {
 		domEl.append(this.canvas);
 		return this;
 	}
-	render() {
+	render(t) {
 		const { gl, params } = this;
 		gl.clearColor(...params.background);
 		gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -84,6 +84,7 @@ class Kubiki {
 			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
 			gl.useProgram(this.program);
 			const transform = mat4.create();
+			mat4.rotate(transform, transform, t * 0.01, [0, 0, 1]);
 			mat4.scale(transform, transform, obj.transform.scale);
 			mat4.translate(transform, transform, obj.transform.position);
 

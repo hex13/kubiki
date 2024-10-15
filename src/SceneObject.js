@@ -28,7 +28,7 @@ export class SceneObject {
 	}
 	computeMatrix() {
 		const matrix = this.transform.matrix;
-	    mat4.identity(matrix);
+		mat4.identity(matrix);
 		mat4.scale(matrix, matrix, this.transform.scale);
 		mat4.translate(matrix, matrix, this.transform.position);
 		mat4.rotateX(matrix, matrix, this.transform.rotation[0]);

@@ -23,7 +23,7 @@ precision mediump float;
 varying vec3 vPosition;
 varying vec4 vNormal;
 void main() {
-	vec4 lightDirection = normalize(vec4(0.0, 0.0, -1.0, 1.0));
+	vec4 lightDirection = normalize(vec4(0.3, 0.0, -1.0, 1.0));
 	float light = dot(-lightDirection, normalize(vNormal)) * 0.5;
 	float a = 0.5 + light;
 	// float a = vPosition.x * 0.3 + vPosition.y * 0.2; + vPosition.z * 0.1;

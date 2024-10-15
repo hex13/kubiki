@@ -42,14 +42,17 @@ const rightNormal = [1, 0, 0];
 const topNormal = [0, 1, 0];
 const bottomNormal = [0, -1, 0];
 
+const offsetX = -0.5;
+const offsetY = -0.5;
+const offsetZ = 0.5;
 export const boxGeometry = {
 	vertices: new Float32Array([
-		...buildRectVertices([0, 0, 0], [1, 0, 0], Y),
-		...buildRectVertices([1, 0, 0], [0, 0, -1], Y),
-		...buildRectVertices([1, 0, -1], [-1, 0, 0], Y),
-		...buildRectVertices([0, 0, -1], [0, 0, 1], Y),
-		...buildRectVertices([0, 1, 0], [1, 0, 0], [0, 0, -1]),
-		...buildRectVertices([0, 0, -1], [1, 0, 0], [0, 0, 1]),
+		...buildRectVertices([offsetX, offsetY, offsetZ], [1, 0, 0], Y),
+		...buildRectVertices([offsetX + 1, offsetY, offsetZ], [0, 0, -1], Y),
+		...buildRectVertices([offsetX + 1, offsetY, offsetZ - 1], [-1, 0, 0], Y),
+		...buildRectVertices([offsetX, offsetY, offsetZ - 1], [0, 0, 1], Y),
+		...buildRectVertices([offsetX, offsetY + 1, offsetZ], [1, 0, 0], [0, 0, -1]),
+		...buildRectVertices([offsetX, offsetY, offsetZ - 1], [1, 0, 0], [0, 0, 1]),
 	]),
 	normals: new Float32Array([
 		...frontNormal,

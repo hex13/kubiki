@@ -53,14 +53,18 @@ class Kubiki {
 		this.canvas = canvas;
 
 		const gl = canvas.getContext('webgl');
+		gl.enable(gl.DEPTH_TEST);
+		gl.enable(gl.CULL_FACE);
 		const { program } = initWebGL(gl);
 		this.program = program;
 		this.gl = gl;
 		this.params = params;
 		this.projection = mat4.create();
 		const viewMatrix = mat4.create();
-		mat4.translate(viewMatrix, viewMatrix, [0, 0, -10]);
-		mat4.perspective(this.projection, 80, params.width/params.height, 0.001, 100);
+		mat4.translate(viewMatrix, viewMatrix, [0, 0, 10]);
+		mat4.invert(viewMatrix, viewMatrix);
+		mat4.perspective(this.projection, Math.PI / 3, params.width/params.height, 0.001, 100);
+
 		mat4.mul(this.projection, this.projection, viewMatrix);
 
 
@@ -88,10 +92,9 @@ class Kubiki {
 			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
 			gl.useProgram(this.program);
 			const transform = mat4.create();
-			mat4.rotate(transform, transform, t * 0.01, [0, 0, 1]);
 			mat4.scale(transform, transform, obj.transform.scale);
 			mat4.translate(transform, transform, obj.transform.position);
-
+			mat4.rotate(transform, transform, t * 0.002, [0, 1, 0]);
 			gl.uniformMatrix4fv(uTransform, false, transform);
 			gl.uniformMatrix4fv(uProjection, false, this.projection);
 			const buffer = gl.createBuffer();

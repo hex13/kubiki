@@ -10,12 +10,21 @@ export class SceneObject {
 	constructor(geometry) {
 		this.geometry = geometry;
 	}
-	position(x, y, z) {
-		const { position } = this.transform;
-		position[0] = typeof x == 'function'? x(position[0]) : x;
-		position[1] = typeof y == 'function'? y(position[1]) : y;
-		position[2] = typeof z == 'function'? z(position[2]) : z;
+	setTransformItem(name, ...args) {
+		const v = this.transform[name];
+		for (let i = 0; i < args.length; i++) {
+			v[i] = typeof args[i] == 'function'? args[i](v[i]) : args[i];
+		}
 		return this;
+	}
+	position(x, y, z) {
+		return this.setTransformItem('position', x, y, z);
+	}
+	rotation(x, y, z) {
+		return this.setTransformItem('rotation', x, y, z);
+	}
+	scale(x, y, z) {
+		return this.setTransformItem('scale', x, y, z);
 	}
 	computeMatrix() {
 		const matrix = this.transform.matrix;

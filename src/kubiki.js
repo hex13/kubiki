@@ -95,7 +95,6 @@ class Kubiki {
 			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
 			const uView = gl.getUniformLocation(this.program, 'uView');
 			gl.useProgram(this.program);
-			obj.transform.rotation[2] += 0.2;
 			obj.computeMatrix();
 			const transform = obj.transform.matrix
 			gl.uniformMatrix4fv(uTransform, false, transform);

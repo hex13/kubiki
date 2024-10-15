@@ -1,4 +1,6 @@
 import { SceneObject } from './SceneObject.js';
+import { triangleGeometry, boxGeometry } from './geometries.js';
+import { vertexShaderSource, fragmentShaderSource } from './shaders.js';
 
 export function init(params) {
 	return new Kubiki(params);
@@ -11,22 +13,6 @@ export function box() {
 export function triangle() {
 	return new SceneObject(triangleGeometry);
 }
-
-
-const vertexShaderSource = `
-attribute vec2 aPosition;
-uniform vec2 uPosition;
-#define SCALE 0.5
-void main() {
-	gl_Position = vec4((aPosition + uPosition) * SCALE, 0.0, 1.0);
-}
-`;
-
-const fragmentShaderSource = `
-void main() {
-	gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
-}
-`;
 
 function compileShader(gl, type, source) {
 	const shader = gl.createShader(type);
@@ -50,22 +36,6 @@ function initWebGL(gl) {
 	gl.linkProgram(program);
 	return { program };
 }
-
-const triangleGeometry = new Float32Array([
-	0.0, 0.0,
-	1.0, 0.0,
-	1.0, 1.0,
-]);
-
-const boxGeometry = new Float32Array([
-	0.0, 0.0,
-	1.0, 0.0,
-	1.0, 1.0,
-	0.0, 0.0,
-	1.0, 1.0,
-	0.0, 1.0,
-]);
-
 
 class Kubiki {
 	constructor(params) {

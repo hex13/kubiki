@@ -2,11 +2,21 @@ import * as K from './kubiki.js';
 
 const rect = K.rect().position(-1.4, 0, 0);
 const box = K.box().position(0, -1, 0).scale(2, 2, 2);
+box.on('click', e => {
+	console.log("clicked", e);
+	box.position(x => x, y => y + 1, z => z);
+});
+
+box.on('click', e => {
+	console.log("$$$$")
+});
 const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0, 1]})
 	.mount(document.body)
 	// .add(rect)
 	.add(box)
-	.add(K.box().position(3, 0, 0).scale(1, 1, 1))
+	.add(K.box().position(3, 0, 0).scale(1, 1, 1).on('click', e => {
+		console.log("xD", e)
+	}))
 	// .add(K.rect().position(1.4, 0))
 	// .add(K.triangle())
 	// .add(K.triangle().position(0, -2.0));

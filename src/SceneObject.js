@@ -8,6 +8,7 @@ export class SceneObject {
 		target: null,
 		matrix: mat4.create(),
 	};
+	listeners = Object.create(null);
 	constructor(geometry) {
 		this.geometry = geometry;
 	}
@@ -29,6 +30,16 @@ export class SceneObject {
 	}
 	lookAt(x, y, z) {
 		this.transform.target = [x, y, z];
+		return this;
+	}
+	on(eventType, f) {
+		this.listeners[eventType] = this.listeners[eventType] || [];
+		this.listeners[eventType].push(f);
+		return this;
+	}
+	emit(eventType, e) {
+		const handlers = this.listeners[eventType];
+		if (handlers) handlers.forEach(h => h(e));
 		return this;
 	}
 	computeMatrix() {

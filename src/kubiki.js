@@ -73,7 +73,9 @@ class Kubiki {
 			if (objIndex >= 0) {
 				console.log("objIndex", objIndex);
 				const obj = this.objects[objIndex];
-				obj.position(x => x, y => y + 1, z => z);
+				if (obj) {
+					obj.emit(e.type, e);
+				}
 				console.log("P", this.objects[objIndex]);
 			}
 

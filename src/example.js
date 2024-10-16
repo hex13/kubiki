@@ -1,7 +1,7 @@
 import * as K from './kubiki.js';
 
 const rect = K.rect().position(-1.4, 0, 0);
-const box = K.box().position(0, -1, 0).scale(2, 2, 2);
+const box = K.box().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3);
 
 // box.on('click', e => {
 // 	console.log("clicked", e);
@@ -43,11 +43,12 @@ box.on('pointerup', e => {
 	console.log("UP")
 });
 
+
 const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0, 1]})
 	.mount(document.body)
 	// .add(rect)
 	.add(box)
-	.add(K.box().position(3, 0, 0).scale(1, 1, 1).on('click', e => {
+	.add(K.box().color(1.0, 0.4, 0.4).position(3, 0, 0).scale(1, 1, 1).on('click', e => {
 		console.log("xD", e)
 	}))
 	// .add(K.rect().position(1.4, 0))

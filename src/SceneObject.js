@@ -8,6 +8,9 @@ export class SceneObject {
 		target: null,
 		matrix: mat4.create(),
 	};
+	material = {
+		color: [1.0, 1.0, 1.0],
+	}
 	listeners = Object.create(null);
 	constructor(geometry) {
 		this.geometry = geometry;
@@ -30,6 +33,13 @@ export class SceneObject {
 	}
 	lookAt(x, y, z) {
 		this.transform.target = [x, y, z];
+		return this;
+	}
+	color(r, g, b) {
+		const { color } = this.material;
+		color[0] = r;
+		color[1] = g;
+		color[2] = b;
 		return this;
 	}
 	on(eventType, f) {

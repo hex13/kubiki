@@ -135,8 +135,10 @@ class Kubiki {
 			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
 			const uObjectIndex = gl.getUniformLocation(this.program, 'uObjectIndex');
 			const uView = gl.getUniformLocation(this.program, 'uView');
+			const uColor = gl.getUniformLocation(this.program, 'uColor');
 			gl.useProgram(this.program);
 			gl.uniform1i(uObjectIndex, picking? i + 1 : 0);
+			gl.uniform3fv(uColor, obj.material.color);
 			obj.computeMatrix();
 			const transform = obj.transform.matrix;
 			gl.uniformMatrix4fv(uTransform, false, transform);

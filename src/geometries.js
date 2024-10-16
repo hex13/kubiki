@@ -21,6 +21,19 @@ function buildRectVertices(start, X, Y) {
 	];
 }
 
+class FaceBuilder {
+	constructor(start) {
+		this.cursor = start;
+	}
+	build(X, Y) {
+		const result = buildRectVertices(this.cursor, X, Y);
+		this.cursor[0] += X[0];
+		this.cursor[1] += X[1];
+		this.cursor[2] += X[2];
+		return result;
+	}
+}
+
 export const rectGeometry = {
 	vertices: new Float32Array([
 		0.0, 0.0, 0.0,
@@ -45,12 +58,15 @@ const bottomNormal = [0, -1, 0];
 const offsetX = -0.5;
 const offsetY = -0.5;
 const offsetZ = 0.5;
+
+const wallBuilder = new FaceBuilder([offsetX, offsetY, offsetZ]);
+
 export const boxGeometry = {
 	vertices: new Float32Array([
-		...buildRectVertices([offsetX, offsetY, offsetZ], [1, 0, 0], Y),
-		...buildRectVertices([offsetX + 1, offsetY, offsetZ], [0, 0, -1], Y),
-		...buildRectVertices([offsetX + 1, offsetY, offsetZ - 1], [-1, 0, 0], Y),
-		...buildRectVertices([offsetX, offsetY, offsetZ - 1], [0, 0, 1], Y),
+		...wallBuilder.build([1, 0, 0], Y),
+		...wallBuilder.build([0, 0, -1], Y),
+		...wallBuilder.build([-1, 0, 0], Y),
+		...wallBuilder.build([0, 0, 1], Y),
 		...buildRectVertices([offsetX, offsetY + 1, offsetZ], [1, 0, 0], [0, 0, -1]),
 		...buildRectVertices([offsetX, offsetY, offsetZ - 1], [1, 0, 0], [0, 0, 1]),
 	]),

@@ -22,11 +22,16 @@ export const fragmentShaderSource = `
 precision mediump float;
 varying vec3 vPosition;
 varying vec4 vNormal;
+
+uniform int uObjectIndex;
 void main() {
+	if (uObjectIndex > 0) {
+		gl_FragColor = vec4(float(uObjectIndex) / 255.0, 0.0, 1.0, 1.0);
+		return;
+	}
 	vec4 lightDirection = normalize(vec4(0.3, 0.0, -1.0, 1.0));
 	float light = dot(-lightDirection, normalize(vNormal)) * 0.5;
 	float a = 0.5 + light;
-	// float a = vPosition.x * 0.3 + vPosition.y * 0.2; + vPosition.z * 0.1;
 	gl_FragColor = vec4(a, a, a, 1.0);
 }
 `;

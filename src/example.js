@@ -1,11 +1,12 @@
 import * as K from './kubiki.js';
 
 const rect = K.rect().position(-1.4, 0, 0);
-const box = K.box().position(0, 0, 0).scale(2, 2, 2);
-const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0.4, 1]})
+const box = K.box().position(0, -1, 0).scale(2, 2, 2);
+const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0, 1]})
 	.mount(document.body)
 	// .add(rect)
 	.add(box)
+	.add(K.box().position(3, 0, 0).scale(1, 1, 1))
 	// .add(K.rect().position(1.4, 0))
 	// .add(K.triangle())
 	// .add(K.triangle().position(0, -2.0));

@@ -27,6 +27,15 @@ function compileShader(gl, type, source) {
 	return shader;
 }
 
+function createTexture(gl, width, height) {
+	const texture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	return texture;
+}
+
 function initWebGL(gl) {
 	let status;
 	const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
@@ -50,6 +59,25 @@ class Kubiki {
 		const canvas = document.createElement('canvas');
 		canvas.width = params.width;
 		canvas.height = params.height;
+
+		const pixels = new Uint8Array(4);
+
+
+		canvas.addEventListener('click', e => {
+			const bounds = e.target.getBoundingClientRect();
+			const x = e.clientX - bounds.x;
+			const y = canvas.height - (e.clientY - bounds.y);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
+			gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+			const objIndex = pixels[0] - 1;
+			if (objIndex >= 0) {
+				console.log("objIndex", objIndex);
+				const obj = this.objects[objIndex];
+				obj.position(x => x, y => y + 1, z => z);
+				console.log("P", this.objects[objIndex]);
+			}
+
+		});
 		this.canvas = canvas;
 
 		const gl = canvas.getContext('webgl');
@@ -58,6 +86,13 @@ class Kubiki {
 		const { program } = initWebGL(gl);
 		this.program = program;
 		this.gl = gl;
+
+		const pickingTexture = createTexture(gl, canvas.width, canvas.height);
+		this.pickingFramebuffer = gl.createFramebuffer();
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pickingTexture, 0);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
 		this.params = params;
 		this.projection = mat4.create();
 
@@ -81,21 +116,19 @@ class Kubiki {
 		domEl.append(this.canvas);
 		return this;
 	}
-	render(t) {
-		this.#computeCamera();
-		const { gl, params } = this;
-		gl.clearColor(...params.background);
-		gl.clear(this.gl.COLOR_BUFFER_BIT);
-
-		this.objects.forEach(obj => {
+	renderObjects(objects, picking = false) {
+		const { gl } = this;
+		this.objects.forEach((obj, i) => {
 			const dimensions = 3;
 			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
 			const aNormal = gl.getAttribLocation(this.program, 'aNormal');
 			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
 			const uTransform = gl.getUniformLocation(this.program, 'uTransform');
 			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
+			const uObjectIndex = gl.getUniformLocation(this.program, 'uObjectIndex');
 			const uView = gl.getUniformLocation(this.program, 'uView');
 			gl.useProgram(this.program);
+			gl.uniform1i(uObjectIndex, picking? i + 1 : 0);
 			obj.computeMatrix();
 			const transform = obj.transform.matrix;
 			gl.uniformMatrix4fv(uTransform, false, transform);
@@ -116,9 +149,22 @@ class Kubiki {
 				gl.vertexAttribPointer(aNormal, dimensions, gl.FLOAT, false, 0, 0);
 			}
 
-
 			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
 		});
+	}
+	render(t) {
+		this.#computeCamera();
+		const { gl, params } = this;
+		gl.clearColor(...params.background);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		gl.clear(this.gl.COLOR_BUFFER_BIT);
+		gl.clear(this.gl.DEPTH_BUFFER_BIT);
+		this.renderObjects(this.objects, false);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
+		gl.clear(this.gl.COLOR_BUFFER_BIT);
+		gl.clear(this.gl.DEPTH_BUFFER_BIT);
+		this.renderObjects(this.objects, true);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		return this;
 	}
 }

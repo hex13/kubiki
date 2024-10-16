@@ -53,6 +53,25 @@ function initWebGL(gl) {
 }
 
 class Kubiki {
+	enableEvent(eventType) {
+		const { canvas, gl } = this;
+		const pixels = new Uint8Array(4);
+		canvas.addEventListener(eventType, e => {
+			const bounds = e.target.getBoundingClientRect();
+			const x = e.clientX - bounds.x;
+			const y = canvas.height - (e.clientY - bounds.y);
+
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
+			gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+			const objIndex = pixels[0] - 1;
+			if (objIndex >= 0) {
+				const obj = this.objects[objIndex];
+				if (obj) {
+					obj.emit(e.type, e);
+				}
+			}
+		});
+	}
 	constructor(params) {
 		params = structuredClone(params);
 		params.background = params.background || [0, 0, 0, 1];
@@ -60,31 +79,12 @@ class Kubiki {
 		canvas.width = params.width;
 		canvas.height = params.height;
 
-		const pixels = new Uint8Array(4);
-
-
-		canvas.addEventListener('click', e => {
-			const bounds = e.target.getBoundingClientRect();
-			const x = e.clientX - bounds.x;
-			const y = canvas.height - (e.clientY - bounds.y);
-			gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
-			gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-			const objIndex = pixels[0] - 1;
-			if (objIndex >= 0) {
-				console.log("objIndex", objIndex);
-				const obj = this.objects[objIndex];
-				if (obj) {
-					obj.emit(e.type, e);
-				}
-				console.log("P", this.objects[objIndex]);
-			}
-
-		});
 		this.canvas = canvas;
-
 		const gl = canvas.getContext('webgl');
 		gl.enable(gl.DEPTH_TEST);
 		gl.enable(gl.CULL_FACE);
+
+
 		const { program } = initWebGL(gl);
 		this.program = program;
 		this.gl = gl;
@@ -104,6 +104,12 @@ class Kubiki {
 		mat4.perspective(this.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 
 		this.objects = [];
+
+		this.enableEvent('click');
+		this.enableEvent('pointerdown');
+		this.enableEvent('pointerup');
+		this.enableEvent('pointermove');
+
 	}
 	#computeCamera() {
 		this.camera.computeMatrix();

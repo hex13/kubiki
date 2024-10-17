@@ -28,11 +28,12 @@ class FaceBuilder {
 		this.dir = [1, 0, 0];
 		this.Y = Y;
 	}
-	forward() {
-		this.vertices.push(...buildRectVertices(this.cursor, this.dir, this.Y));
-		this.cursor[0] += this.dir[0];
-		this.cursor[1] += this.dir[1];
-		this.cursor[2] += this.dir[2];
+	forward(amount = 1) {
+		const delta = [this.dir[0] * amount, this.dir[1] * amount, this.dir[2] * amount];
+		this.vertices.push(...buildRectVertices(this.cursor, delta, this.Y));
+		this.cursor[0] += this.dir[0] * amount;
+		this.cursor[1] += this.dir[1] * amount;
+		this.cursor[2] += this.dir[2] * amount;
 		return this;
 	}
 	left() {
@@ -79,12 +80,17 @@ wallBuilder
 	.left()
 	.forward()
 
+function buildTopBottom([x, y, z]) {
+	return [
+		...buildRectVertices([x, y + 1, z], [1, 0, 0], [0, 0, -1]),
+		...buildRectVertices([x, y, z - 1], [1, 0, 0], [0, 0, 1]),
+	];
+}
 
 export const boxGeometry = {
 	vertices: new Float32Array([
 		...wallBuilder.vertices,
-		...buildRectVertices([offsetX, offsetY + 1, offsetZ], [1, 0, 0], [0, 0, -1]),
-		...buildRectVertices([offsetX, offsetY, offsetZ - 1], [1, 0, 0], [0, 0, 1]),
+		...buildTopBottom([offsetX, offsetY, offsetZ], [1, 0, 0], [0, 0, -1]),
 	]),
 	normals: new Float32Array([
 		...frontNormal,
@@ -128,5 +134,6 @@ export const boxGeometry = {
 		...bottomNormal,
 		...bottomNormal,
 		...bottomNormal,
+
 	]),
 };

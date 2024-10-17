@@ -57,7 +57,7 @@ const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0, 1]})
 
 kubiki.camera.lookAt(0, 0, 0);
 function update(t) {
-	rect.rotation(x => x + 0.04, y => y, z => z);
+	box.rotation(v => v, v => v + 0.04, z => z);
 	// box.position(x => Math.cos(t * 0.002) * 4, y => Math.sin(t * 0.003) * 5, z => z);
 	// rect.scale(x => x + 0.01, y => y + 0.01, 1);
 	kubiki.render(t);

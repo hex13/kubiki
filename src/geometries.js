@@ -1,3 +1,5 @@
+import { vec3 } from 'gl-matrix';
+
 export const triangleGeometry = {
 	vertices: new Float32Array([
 		0.0, 0.0, 0.0,
@@ -22,16 +24,17 @@ function buildRectVertices(start, X, Y) {
 }
 
 class FaceBuilder {
-	constructor(start, Y) {
+	constructor(start, X, Y) {
 		this.cursor = start;
 		this.vertices = [];
 		this.normals = [];
-		this.dir = [1, 0, 0];
+		this.dir = X;
 		this.Y = Y;
 	}
 	forward(amount = 1) {
 		const delta = [this.dir[0] * amount, this.dir[1] * amount, this.dir[2] * amount];
-		const normal = [-this.dir[2], this.dir[1], this.dir[0]];
+		const normal = vec3.create();
+		vec3.cross(normal, this.dir, this.Y);
 
 		const vertices = buildRectVertices(this.cursor, delta, this.Y);
 		for (let i = 0; i < vertices.length / 3; i++) {
@@ -82,7 +85,7 @@ const offsetX = -0.5;
 const offsetY = -0.5;
 const offsetZ = 0.5;
 
-const wallBuilder = new FaceBuilder([offsetX, offsetY, offsetZ], Y);
+const wallBuilder = new FaceBuilder([offsetX, offsetY, offsetZ], [1, 0, 0], Y);
 
 wallBuilder
 	.forward()
@@ -100,27 +103,21 @@ function buildTopBottom([x, y, z]) {
 	];
 }
 
+const topBuilder = new FaceBuilder([offsetX, offsetY + 1, offsetZ], [1, 0, 0], [0, 0, -1]);
+const bottomBuilder = new FaceBuilder([offsetX, offsetY, offsetZ - 1], [1, 0, 0], [0, 0, 1]);
+topBuilder.forward(1);
+bottomBuilder.forward(1);
 export const boxGeometry = {
 	vertices: new Float32Array([
 		...wallBuilder.vertices,
-		...buildTopBottom([offsetX, offsetY, offsetZ], [1, 0, 0], [0, 0, -1]),
+		...topBuilder.vertices,
+		...bottomBuilder.vertices,
+		// ...buildTopBottom([offsetX, offsetY, offsetZ], [1, 0, 0], [0, 0, -1]),
 	]),
 	normals: new Float32Array([
 		...wallBuilder.normals,
-
-		...topNormal,
-		...topNormal,
-		...topNormal,
-		...topNormal,
-		...topNormal,
-		...topNormal,
-
-		...bottomNormal,
-		...bottomNormal,
-		...bottomNormal,
-		...bottomNormal,
-		...bottomNormal,
-		...bottomNormal,
-
+		...topBuilder.normals,
+		...bottomBuilder.normals,
 	]),
 };
+

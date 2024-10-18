@@ -25,12 +25,19 @@ class FaceBuilder {
 	constructor(start, Y) {
 		this.cursor = start;
 		this.vertices = [];
+		this.normals = [];
 		this.dir = [1, 0, 0];
 		this.Y = Y;
 	}
 	forward(amount = 1) {
 		const delta = [this.dir[0] * amount, this.dir[1] * amount, this.dir[2] * amount];
-		this.vertices.push(...buildRectVertices(this.cursor, delta, this.Y));
+		const normal = [-this.dir[2], this.dir[1], this.dir[0]];
+
+		const vertices = buildRectVertices(this.cursor, delta, this.Y);
+		for (let i = 0; i < vertices.length / 3; i++) {
+			this.normals.push(...normal);
+		}
+		this.vertices.push(...vertices);
 		this.cursor[0] += this.dir[0] * amount;
 		this.cursor[1] += this.dir[1] * amount;
 		this.cursor[2] += this.dir[2] * amount;
@@ -40,6 +47,12 @@ class FaceBuilder {
 		const prevX = this.dir[0];
 		this.dir[0] = this.dir[2];
 		this.dir[2] = -prevX;
+		return this;
+	}
+	right() {
+		const prevX = this.dir[0];
+		this.dir[0] = -this.dir[2];
+		this.dir[2] = prevX;
 		return this;
 	}
 }
@@ -93,33 +106,7 @@ export const boxGeometry = {
 		...buildTopBottom([offsetX, offsetY, offsetZ], [1, 0, 0], [0, 0, -1]),
 	]),
 	normals: new Float32Array([
-		...frontNormal,
-		...frontNormal,
-		...frontNormal,
-		...frontNormal,
-		...frontNormal,
-		...frontNormal,
-
-		...rightNormal,
-		...rightNormal,
-		...rightNormal,
-		...rightNormal,
-		...rightNormal,
-		...rightNormal,
-
-		...backNormal,
-		...backNormal,
-		...backNormal,
-		...backNormal,
-		...backNormal,
-		...backNormal,
-
-		...leftNormal,
-		...leftNormal,
-		...leftNormal,
-		...leftNormal,
-		...leftNormal,
-		...leftNormal,
+		...wallBuilder.normals,
 
 		...topNormal,
 		...topNormal,

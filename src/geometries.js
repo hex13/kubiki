@@ -23,45 +23,70 @@ function buildRectVertices(start, X, Y) {
 	];
 }
 
+
 class FaceBuilder {
 	constructor(start, X, Y) {
 		this.cursor = start;
 		this.vertices = [];
 		this.normals = [];
-		this.dir = X;
-		this.Y = Y;
+		this.plane = {
+			xAxis: [1, 0, 0],
+			yAxis: [0, 1, 0],
+			zAxis: [0, 0, 1],
+			reversed: false,
+		};
+		this.isHidden = false;
+	}
+	hidden() {
+		this.isHidden = true;
+		return this;
+	}
+	visible() {
+		this.isHidden = false;
+		return this;
+	}
+	skip(amount = 1) {
+		return this.hidden().forward(amount).visible();
+	}
+	wrap() {
+		const { xAxis, zAxis, reversed } = this.plane;
+		this.plane.xAxis = [-zAxis[0], -zAxis[1], -zAxis[2]];
+		this.plane.zAxis = xAxis;
+		return this;
+	}
+	log() {
+		console.log("cursor", ...this.cursor, 'plane', {...this.plane});
+		return this;
 	}
 	forward(amount = 1) {
-		const delta = [this.dir[0] * amount, this.dir[1] * amount, this.dir[2] * amount];
+		const { xAxis, yAxis, reversed } = this.plane;
+		const delta = [xAxis[0] * amount, xAxis[1] * amount, xAxis[2] * amount];
 		const normal = vec3.create();
-		vec3.cross(normal, this.dir, this.Y);
+		if (reversed) {
+			vec3.cross(normal, yAxis, xAxis);
+		} else {
+			vec3.cross(normal, xAxis, yAxis);
+		}
 
-		const vertices = buildRectVertices(this.cursor, delta, this.Y);
-		for (let i = 0; i < vertices.length / 3; i++) {
-			this.normals.push(...normal);
+		if (!this.isHidden) {
+			const vertices = buildRectVertices(this.cursor, reversed? yAxis: delta, reversed? delta : yAxis);
+			for (let i = 0; i < vertices.length / 3; i++) {
+				this.normals.push(...normal);
+			}
+			this.vertices.push(...vertices);
+
 		}
-		this.vertices.push(...vertices);
-		this.cursor[0] += this.dir[0] * amount;
-		this.cursor[1] += this.dir[1] * amount;
-		this.cursor[2] += this.dir[2] * amount;
+		this.cursor[0] += xAxis[0] * amount;
+		this.cursor[1] += xAxis[1] * amount;
+		this.cursor[2] += xAxis[2] * amount;
 		return this;
 	}
-	turn90(axis, dir) {
-		let axisA, axisB;
-		if (axis == 'y') {
-			axisA = 0;
-			axisB = 2;
-		}
-		const prevA = this.dir[axisA];
-		this.dir[axisA] = -this.dir[axisB] * dir;
-		this.dir[axisB] = prevA * dir;
+	turn() {
+		const { xAxis, yAxis, reversed } = this.plane;
+		this.plane.xAxis = yAxis;
+		this.plane.yAxis = xAxis;
+		this.plane.reversed = !reversed;
 		return this;
-	}
-	left() {
-		return this.turn90('y', -1);
-	}
-	right() {
-		return this.turn90('y', 1);
 	}
 }
 
@@ -92,37 +117,52 @@ const offsetZ = 0.5;
 
 const wallBuilder = new FaceBuilder([offsetX, offsetY, offsetZ], [1, 0, 0], Y);
 
+const w = 5;
+const h = 3;
+
 wallBuilder
+	.log()
 	.forward()
-	.left()
-	.forward()
-	.left()
-	.forward()
-	.left()
-	.forward()
+	.wrap().forward()
+	.wrap().forward()
+	.wrap().forward()
+	.wrap()
+	.turn()
+	.skip()
+	.wrap()
+	.forward() // top
+ 	.wrap()
+ 	.skip()
+	.wrap().forward() // bottom
+	// .turn90('x', -1)
+	// .forward()
+	// .left()
 
-function buildTopBottom([x, y, z]) {
-	return [
-		...buildRectVertices([x, y + 1, z], [1, 0, 0], [0, 0, -1]),
-		...buildRectVertices([x, y, z - 1], [1, 0, 0], [0, 0, 1]),
-	];
-}
+// wallBuilder
+// 	.forward(w)
+// 	.left()
+// 	.forward(h)
+// 	.left()
+// 	.forward(w)
+// 	.left()
+// 	.forward(1)
+// 	.moveBy([0, 0, 1])
+// 	.forward(h - 2)
+// 	.left()
+// 	.moveBy([0, 0, - h + 1])
+// 	.forward(w - 1)
+// 	.right()
+// 	.forward(h - 2)
+// 	.right()
+// 	.forward(w - 1)
 
-const topBuilder = new FaceBuilder([offsetX, offsetY + 1, offsetZ], [1, 0, 0], [0, 0, -1]);
-const bottomBuilder = new FaceBuilder([offsetX, offsetY, offsetZ - 1], [1, 0, 0], [0, 0, 1]);
-topBuilder.forward(1);
-bottomBuilder.forward(1);
+
 export const boxGeometry = {
 	vertices: new Float32Array([
 		...wallBuilder.vertices,
-		...topBuilder.vertices,
-		...bottomBuilder.vertices,
-		// ...buildTopBottom([offsetX, offsetY, offsetZ], [1, 0, 0], [0, 0, -1]),
 	]),
 	normals: new Float32Array([
 		...wallBuilder.normals,
-		...topBuilder.normals,
-		...bottomBuilder.normals,
 	]),
 };
 

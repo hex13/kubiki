@@ -46,17 +46,22 @@ class FaceBuilder {
 		this.cursor[2] += this.dir[2] * amount;
 		return this;
 	}
-	left() {
-		const prevX = this.dir[0];
-		this.dir[0] = this.dir[2];
-		this.dir[2] = -prevX;
+	turn90(axis, dir) {
+		let axisA, axisB;
+		if (axis == 'y') {
+			axisA = 0;
+			axisB = 2;
+		}
+		const prevA = this.dir[axisA];
+		this.dir[axisA] = -this.dir[axisB] * dir;
+		this.dir[axisB] = prevA * dir;
 		return this;
 	}
+	left() {
+		return this.turn90('y', -1);
+	}
 	right() {
-		const prevX = this.dir[0];
-		this.dir[0] = -this.dir[2];
-		this.dir[2] = prevX;
-		return this;
+		return this.turn90('y', 1);
 	}
 }
 

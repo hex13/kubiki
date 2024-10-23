@@ -1,16 +1,18 @@
 {
   "name": "kubiki",
+  "type": "module",
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "esbuild --bundle --outfile=src/out.js src/example.js --watch"
   },
   "author": "Łukasz Lityński",
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "esbuild": "^0.24.0"
+    "esbuild": "^0.24.0",
+    "mocha": "^10.7.3"
   },
   "dependencies": {
     "gl-matrix": "^3.4.3"

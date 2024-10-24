@@ -1,4 +1,5 @@
 import * as K from './kubiki.js';
+import { LineBuilder } from './LineBuilder.js';
 
 const rect = K.rect().position(-1.4, 0, 0);
 const box = K.box().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3);
@@ -71,3 +72,31 @@ function update(t) {
 }
 
 requestAnimationFrame(update);
+
+{
+	const canvas = document.createElement('canvas');
+	document.body.append(canvas);
+	const ctx = canvas.getContext('2d');
+
+	const lineBuilder = new LineBuilder();
+	lineBuilder.turn(Math.PI / 4);
+	lineBuilder.forward(100);
+	lineBuilder.turn(-0.6);
+	lineBuilder.forward(40);
+	lineBuilder.turn(-0.6);
+	lineBuilder.forward(40);
+	lineBuilder.turn(0.6);
+	lineBuilder.forward(20);
+	// const points = [
+	// 	[0, 0],
+	// 	[100, 100],
+	// 	[100, 120],
+	// 	[110, 150],
+	// ];
+	ctx.beginPath();
+	console.log("points", lineBuilder.points)
+	lineBuilder.points.forEach(pt => {
+		ctx.lineTo(pt[0], pt[1]);
+	});
+	ctx.stroke();
+}

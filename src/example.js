@@ -52,6 +52,7 @@ const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0, 1]})
 	.add(K.box().color(1.0, 0.4, 0.4).position(3, 0, 0).scale(1, 1, 1).on('click', e => {
 		console.log("xD", e)
 	}))
+	.add(K.terrain({ columns: 10, rows: 6}).rotation(-Math.PI/4, 0, 0 ))
 	// .add(K.rect().position(1.4, 0))
 	// .add(K.triangle())
 	// .add(K.triangle().position(0, -2.0));

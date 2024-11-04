@@ -102,6 +102,7 @@ class Kubiki {
 		const gl = canvas.getContext('webgl');
 
 		const { renderer } = initWebGL(gl);
+		renderer.params = params;
 		mat4.perspective(renderer.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 
 		this.renderer = renderer;
@@ -113,6 +114,7 @@ class Kubiki {
 		this.#computeCamera();
 
 		this.objects = [];
+		this.renderer.objects = this.objects;
 
 		this.enableEvent('click');
 		this.enableEvent('pointerdown');
@@ -135,16 +137,7 @@ class Kubiki {
 	}
 	render(t) {
 		this.#computeCamera();
-		const { gl, params } = this;
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		this.renderer.clear(...params.background);
-		this.renderer.renderObjects(this.objects, false);
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, this.renderer.pickingFramebuffer);
-		this.renderer.clear(0, 0, 0, 0);
-		this.renderer.renderObjects(this.objects, true);
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		this.renderer.render();
 		return this;
 	}
 }

@@ -76,6 +76,17 @@ class WebGLRenderer {
 			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
 		});
 	}
+	render() {
+		const { gl } = this;
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		this.clear(...this.params.background);
+		this.renderObjects(this.objects, false);
+
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
+		this.clear(0, 0, 0, 0);
+		this.renderObjects(this.objects, true);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	}
 }
 
 export function initWebGL(gl) {

@@ -2,7 +2,7 @@ import { vertexShaderSource, fragmentShaderSource } from './shaders.js';
 import { mat4 } from 'gl-matrix';
 
 // abstract class for renderers
-class Renderer {
+export class Renderer {
 	camera = null;
 }
 
@@ -22,11 +22,28 @@ export function createTexture(gl, width, height) {
 	return texture;
 }
 
-class WebGLRenderer extends Renderer {
-	constructor(gl, program) {
+export class WebGLRenderer extends Renderer {
+	constructor(gl) {
 		super();
 		this.gl = gl;
+
+		let status;
+		const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+		status = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
+		console.log("vertexShader", status, gl.getShaderInfoLog(vertexShader))
+		const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+		status = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
+		console.log("fragmentShader", status, gl.getShaderInfoLog(fragmentShader))
+
+		const program = gl.createProgram();
+		gl.attachShader(program, vertexShader);
+		gl.attachShader(program, fragmentShader);
+		gl.linkProgram(program);
 		this.program = program;
+
+		gl.enable(gl.DEPTH_TEST);
+		gl.enable(gl.CULL_FACE);
+
 		this.projection = mat4.create();
 		this.viewMatrix = mat4.create();
 		this.init();
@@ -116,25 +133,3 @@ class WebGLRenderer extends Renderer {
 		});
 	}
 }
-
-export function initWebGL(gl) {
-	let status;
-	const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-	status = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
-	console.log("vertexShader", status, gl.getShaderInfoLog(vertexShader))
-	const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-	status = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
-	console.log("fragmentShader", status, gl.getShaderInfoLog(fragmentShader))
-
-	const program = gl.createProgram();
-	gl.attachShader(program, vertexShader);
-	gl.attachShader(program, fragmentShader);
-	gl.linkProgram(program);
-
-	gl.enable(gl.DEPTH_TEST);
-	gl.enable(gl.CULL_FACE);
-
-	const renderer = new WebGLRenderer(gl, program);
-	return { renderer };
-}
-

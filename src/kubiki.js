@@ -2,7 +2,7 @@ import { SceneObject } from './SceneObject.js';
 import { triangleGeometry, rectGeometry, boxGeometry } from './geometries.js';
 import { createTerrain } from 'tileterrain';
 import { vec3 } from 'gl-matrix';
-import { initWebGL, createTexture } from './renderer.js';
+import { WebGLRenderer } from './renderer.js';
 
 import { mat4 } from 'gl-matrix';
 
@@ -82,7 +82,7 @@ class Kubiki {
 		this.canvas = canvas;
 		const gl = canvas.getContext('webgl');
 
-		const { renderer } = initWebGL(gl);
+		const renderer = new WebGLRenderer(gl);
 		renderer.params = params;
 		mat4.perspective(renderer.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 

@@ -100,19 +100,12 @@ class Kubiki {
 
 		this.canvas = canvas;
 		const gl = canvas.getContext('webgl');
-		gl.enable(gl.DEPTH_TEST);
-		gl.enable(gl.CULL_FACE);
 
-		const { program, renderer } = initWebGL(gl);
+		const { program, renderer, pickingFramebuffer } = initWebGL(gl);
 		this.program = program;
 		this.renderer = renderer;
+		this.pickingFramebuffer = pickingFramebuffer;
 		this.gl = gl;
-
-		const pickingTexture = createTexture(gl, canvas.width, canvas.height);
-		this.pickingFramebuffer = gl.createFramebuffer();
-		gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
-		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pickingTexture, 0);
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 		this.params = params;
 		this.projection = mat4.create();

@@ -45,7 +45,16 @@ export function initWebGL(gl) {
 	gl.attachShader(program, fragmentShader);
 	gl.linkProgram(program);
 
+	gl.enable(gl.DEPTH_TEST);
+	gl.enable(gl.CULL_FACE);
+
+	const pickingTexture = createTexture(gl, gl.canvas.width, gl.canvas.height);
+	const pickingFramebuffer = gl.createFramebuffer();
+	gl.bindFramebuffer(gl.FRAMEBUFFER, pickingFramebuffer);
+	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pickingTexture, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
 	const renderer = new WebGLRenderer(gl);
-	return { program, renderer };
+	return { program, renderer, pickingFramebuffer };
 }
 

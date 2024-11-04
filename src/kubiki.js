@@ -102,18 +102,17 @@ class Kubiki {
 		const gl = canvas.getContext('webgl');
 
 		const { program, renderer, pickingFramebuffer } = initWebGL(gl);
+		mat4.perspective(renderer.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
+
 		this.program = program;
 		this.renderer = renderer;
 		this.pickingFramebuffer = pickingFramebuffer;
 		this.gl = gl;
 
 		this.params = params;
-		this.projection = mat4.create();
 
 		this.camera = new SceneObject().position(0, 0, 20);
-		this.viewMatrix = mat4.create();
 		this.#computeCamera();
-		mat4.perspective(this.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 
 		this.objects = [];
 
@@ -125,7 +124,7 @@ class Kubiki {
 	}
 	#computeCamera() {
 		this.camera.computeMatrix();
-		mat4.invert(this.viewMatrix, this.camera.transform.matrix);
+		mat4.invert(this.renderer.viewMatrix, this.camera.transform.matrix);
 	}
 	add(obj) {
 		this.objects.push(obj);
@@ -136,56 +135,17 @@ class Kubiki {
 		domEl.append(this.canvas);
 		return this;
 	}
-	renderObjects(objects, picking = false) {
-		const { gl } = this;
-		this.objects.forEach((obj, i) => {
-			const dimensions = 3;
-			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
-			const aNormal = gl.getAttribLocation(this.program, 'aNormal');
-			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
-			const uTransform = gl.getUniformLocation(this.program, 'uTransform');
-			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
-			const uObjectIndex = gl.getUniformLocation(this.program, 'uObjectIndex');
-			const uView = gl.getUniformLocation(this.program, 'uView');
-			const uColor = gl.getUniformLocation(this.program, 'uColor');
-			gl.useProgram(this.program);
-			gl.uniform1i(uObjectIndex, picking? i + 1 : 0);
-			gl.uniform3fv(uColor, obj.material.color);
-			obj.computeMatrix();
-			const transform = obj.transform.matrix;
-			gl.uniformMatrix4fv(uTransform, false, transform);
-			gl.uniformMatrix4fv(uProjection, false, this.projection);
-			gl.uniformMatrix4fv(uView, false, this.viewMatrix);
-
-			const buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-			gl.bufferData(gl.ARRAY_BUFFER, obj.geometry.vertices, gl.STATIC_DRAW);
-			gl.enableVertexAttribArray(aPosition);
-			gl.vertexAttribPointer(aPosition, dimensions, gl.FLOAT, false, 0, 0);
-
-			if (obj.geometry.normals) {
-				const buffer = gl.createBuffer();
-				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-				gl.bufferData(gl.ARRAY_BUFFER, obj.geometry.normals, gl.STATIC_DRAW);
-				gl.enableVertexAttribArray(aNormal);
-				gl.vertexAttribPointer(aNormal, dimensions, gl.FLOAT, false, 0, 0);
-			}
-			// console.warn("##")
-			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
-			// console.warn("--", obj.geometry)
-		});
-	}
 	render(t) {
 		this.#computeCamera();
 		const { gl, params } = this;
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		this.renderer.clear(...params.background);
-		this.renderObjects(this.objects, false);
+		this.renderer.renderObjects(this.objects, false);
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
 		this.renderer.clear(0, 0, 0, 0);
-		this.renderObjects(this.objects, true);
+		this.renderer.renderObjects(this.objects, true);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		return this;
 	}

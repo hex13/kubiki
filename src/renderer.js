@@ -1,4 +1,5 @@
 import { vertexShaderSource, fragmentShaderSource } from './shaders.js';
+import { mat4 } from 'gl-matrix';
 
 function compileShader(gl, type, source) {
 	const shader = gl.createShader(type);
@@ -17,8 +18,11 @@ export function createTexture(gl, width, height) {
 }
 
 class WebGLRenderer {
-	constructor(gl) {
+	constructor(gl, program) {
 		this.gl = gl;
+		this.program = program;
+		this.projection = mat4.create();
+		this.viewMatrix = mat4.create();
 	}
 	clear(...clearColor) {
 		const { gl } = this;
@@ -26,8 +30,42 @@ class WebGLRenderer {
 		gl.clear(this.gl.COLOR_BUFFER_BIT);
 		gl.clear(this.gl.DEPTH_BUFFER_BIT);
 	}
-	render() {
+	renderObjects(objects, picking = false) {
+		const { gl } = this;
+		objects.forEach((obj, i) => {
+			const dimensions = 3;
+			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
+			const aNormal = gl.getAttribLocation(this.program, 'aNormal');
+			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
+			const uTransform = gl.getUniformLocation(this.program, 'uTransform');
+			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
+			const uObjectIndex = gl.getUniformLocation(this.program, 'uObjectIndex');
+			const uView = gl.getUniformLocation(this.program, 'uView');
+			const uColor = gl.getUniformLocation(this.program, 'uColor');
+			gl.useProgram(this.program);
+			gl.uniform1i(uObjectIndex, picking? i + 1 : 0);
+			gl.uniform3fv(uColor, obj.material.color);
+			obj.computeMatrix();
+			const transform = obj.transform.matrix;
+			gl.uniformMatrix4fv(uTransform, false, transform);
+			gl.uniformMatrix4fv(uProjection, false, this.projection);
+			gl.uniformMatrix4fv(uView, false, this.viewMatrix);
 
+			const buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+			gl.bufferData(gl.ARRAY_BUFFER, obj.geometry.vertices, gl.STATIC_DRAW);
+			gl.enableVertexAttribArray(aPosition);
+			gl.vertexAttribPointer(aPosition, dimensions, gl.FLOAT, false, 0, 0);
+
+			if (obj.geometry.normals) {
+				const buffer = gl.createBuffer();
+				gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+				gl.bufferData(gl.ARRAY_BUFFER, obj.geometry.normals, gl.STATIC_DRAW);
+				gl.enableVertexAttribArray(aNormal);
+				gl.vertexAttribPointer(aNormal, dimensions, gl.FLOAT, false, 0, 0);
+			}
+			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
+		});
 	}
 }
 
@@ -54,7 +92,7 @@ export function initWebGL(gl) {
 	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pickingTexture, 0);
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-	const renderer = new WebGLRenderer(gl);
-	return { program, renderer, pickingFramebuffer };
+	const renderer = new WebGLRenderer(gl, program);
+	return { renderer, pickingFramebuffer };
 }
 

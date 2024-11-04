@@ -101,6 +101,7 @@ class Kubiki {
 	}
 	add(obj) {
 		this.objects.push(obj);
+		this.renderer.add(obj);
 		return this;
 	}
 	mount(domEl) {

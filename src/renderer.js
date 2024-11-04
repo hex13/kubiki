@@ -4,6 +4,15 @@ import { mat4 } from 'gl-matrix';
 // abstract class for renderers
 export class Renderer {
 	camera = null;
+	enableEvent() {
+
+	}
+	render() {
+
+	}
+	add() {
+
+	}
 }
 
 function compileShader(gl, type, source) {

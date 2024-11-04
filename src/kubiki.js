@@ -106,8 +106,6 @@ class Kubiki {
 		mat4.perspective(renderer.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 
 		this.renderer = renderer;
-		this.gl = gl;
-
 		this.params = params;
 
 		this.camera = new SceneObject().position(0, 0, 20);
@@ -120,7 +118,6 @@ class Kubiki {
 		this.enableEvent('pointerdown');
 		this.enableEvent('pointerup');
 		this.enableEvent('pointermove');
-
 	}
 	#computeCamera() {
 		this.camera.computeMatrix();
@@ -131,7 +128,6 @@ class Kubiki {
 		return this;
 	}
 	mount(domEl) {
-		console.log("mounted", domEl, this.canvas)
 		domEl.append(this.canvas);
 		return this;
 	}

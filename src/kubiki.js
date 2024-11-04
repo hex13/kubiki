@@ -1,8 +1,8 @@
 import { SceneObject } from './SceneObject.js';
 import { triangleGeometry, rectGeometry, boxGeometry } from './geometries.js';
-import { vertexShaderSource, fragmentShaderSource } from './shaders.js';
 import { createTerrain } from 'tileterrain';
 import { vec3 } from 'gl-matrix';
+import { initWebGL, createTexture } from './renderer.js';
 
 import { mat4 } from 'gl-matrix';
 
@@ -71,38 +71,6 @@ export function triangle() {
 	return new SceneObject(triangleGeometry);
 }
 
-function compileShader(gl, type, source) {
-	const shader = gl.createShader(type);
-	gl.shaderSource(shader, source);
-	gl.compileShader(shader);
-	return shader;
-}
-
-function createTexture(gl, width, height) {
-	const texture = gl.createTexture();
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	return texture;
-}
-
-function initWebGL(gl) {
-	let status;
-	const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-	status = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
-	console.log("vertexShader", status, gl.getShaderInfoLog(vertexShader))
-	const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-	status = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
-	console.log("fragmentShader", status, gl.getShaderInfoLog(fragmentShader))
-
-	const program = gl.createProgram();
-	gl.attachShader(program, vertexShader);
-	gl.attachShader(program, fragmentShader);
-	gl.linkProgram(program);
-	return { program };
-}
-
 class Kubiki {
 	enableEvent(eventType) {
 		const { canvas, gl } = this;
@@ -134,7 +102,6 @@ class Kubiki {
 		const gl = canvas.getContext('webgl');
 		gl.enable(gl.DEPTH_TEST);
 		gl.enable(gl.CULL_FACE);
-
 
 		const { program } = initWebGL(gl);
 		this.program = program;

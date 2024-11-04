@@ -82,9 +82,7 @@ class Kubiki {
 		this.canvas = canvas;
 		const gl = canvas.getContext('webgl');
 
-		const renderer = new WebGLRenderer(gl);
-		renderer.params = params;
-		mat4.perspective(renderer.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
+		const renderer = new WebGLRenderer(gl, params);
 
 		this.renderer = renderer;
 

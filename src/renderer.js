@@ -23,9 +23,10 @@ export function createTexture(gl, width, height) {
 }
 
 export class WebGLRenderer extends Renderer {
-	constructor(gl) {
+	constructor(gl, params) {
 		super();
 		this.gl = gl;
+		this.params = params;
 
 		let status;
 		const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
@@ -46,6 +47,7 @@ export class WebGLRenderer extends Renderer {
 
 		this.projection = mat4.create();
 		this.viewMatrix = mat4.create();
+		mat4.perspective(this.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 		this.init();
 	}
 	init() {

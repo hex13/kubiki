@@ -80,7 +80,7 @@ class Kubiki {
 			const x = e.clientX - bounds.x;
 			const y = canvas.height - (e.clientY - bounds.y);
 
-			gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.renderer.pickingFramebuffer);
 			gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 			const objIndex = pixels[0] - 1;
 			if (objIndex >= 0) {
@@ -101,12 +101,10 @@ class Kubiki {
 		this.canvas = canvas;
 		const gl = canvas.getContext('webgl');
 
-		const { program, renderer, pickingFramebuffer } = initWebGL(gl);
+		const { renderer } = initWebGL(gl);
 		mat4.perspective(renderer.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 
-		this.program = program;
 		this.renderer = renderer;
-		this.pickingFramebuffer = pickingFramebuffer;
 		this.gl = gl;
 
 		this.params = params;
@@ -143,7 +141,7 @@ class Kubiki {
 		this.renderer.clear(...params.background);
 		this.renderer.renderObjects(this.objects, false);
 
-		gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.renderer.pickingFramebuffer);
 		this.renderer.clear(0, 0, 0, 0);
 		this.renderer.renderObjects(this.objects, true);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);

@@ -87,6 +87,26 @@ class WebGLRenderer {
 		this.renderObjects(this.objects, true);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	}
+	enableEvent(eventType) {
+		const { gl } = this;
+		const { canvas } = gl;
+		const pixels = new Uint8Array(4);
+		canvas.addEventListener(eventType, e => {
+			const bounds = e.target.getBoundingClientRect();
+			const x = e.clientX - bounds.x;
+			const y = canvas.height - (e.clientY - bounds.y);
+
+			gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
+			gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+			const objIndex = pixels[0] - 1;
+			if (objIndex >= 0) {
+				const obj = this.objects[objIndex];
+				if (obj) {
+					obj.emit(e.type, e);
+				}
+			}
+		});
+	}
 }
 
 export function initWebGL(gl) {

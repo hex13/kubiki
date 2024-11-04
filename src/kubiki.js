@@ -72,25 +72,6 @@ export function triangle() {
 }
 
 class Kubiki {
-	enableEvent(eventType) {
-		const { canvas, gl } = this;
-		const pixels = new Uint8Array(4);
-		canvas.addEventListener(eventType, e => {
-			const bounds = e.target.getBoundingClientRect();
-			const x = e.clientX - bounds.x;
-			const y = canvas.height - (e.clientY - bounds.y);
-
-			gl.bindFramebuffer(gl.FRAMEBUFFER, this.renderer.pickingFramebuffer);
-			gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-			const objIndex = pixels[0] - 1;
-			if (objIndex >= 0) {
-				const obj = this.objects[objIndex];
-				if (obj) {
-					obj.emit(e.type, e);
-				}
-			}
-		});
-	}
 	constructor(params) {
 		params = structuredClone(params);
 		params.background = params.background || [0, 0, 0, 1];
@@ -106,6 +87,7 @@ class Kubiki {
 		mat4.perspective(renderer.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
 
 		this.renderer = renderer;
+
 		this.params = params;
 
 		this.camera = new SceneObject().position(0, 0, 20);
@@ -114,10 +96,9 @@ class Kubiki {
 		this.objects = [];
 		this.renderer.objects = this.objects;
 
-		this.enableEvent('click');
-		this.enableEvent('pointerdown');
-		this.enableEvent('pointerup');
-		this.enableEvent('pointermove');
+		['click','pointerdown', 'pointerup', 'pointermove'].forEach(type => {
+			this.renderer.enableEvent(type);
+		});
 	}
 	#computeCamera() {
 		this.camera.computeMatrix();

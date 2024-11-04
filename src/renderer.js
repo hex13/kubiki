@@ -16,6 +16,21 @@ export function createTexture(gl, width, height) {
 	return texture;
 }
 
+class WebGLRenderer {
+	constructor(gl) {
+		this.gl = gl;
+	}
+	clear(...clearColor) {
+		const { gl } = this;
+		gl.clearColor(...clearColor);
+		gl.clear(this.gl.COLOR_BUFFER_BIT);
+		gl.clear(this.gl.DEPTH_BUFFER_BIT);
+	}
+	render() {
+
+	}
+}
+
 export function initWebGL(gl) {
 	let status;
 	const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
@@ -29,6 +44,8 @@ export function initWebGL(gl) {
 	gl.attachShader(program, vertexShader);
 	gl.attachShader(program, fragmentShader);
 	gl.linkProgram(program);
-	return { program };
+
+	const renderer = new WebGLRenderer(gl);
+	return { program, renderer };
 }
 

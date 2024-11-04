@@ -103,8 +103,9 @@ class Kubiki {
 		gl.enable(gl.DEPTH_TEST);
 		gl.enable(gl.CULL_FACE);
 
-		const { program } = initWebGL(gl);
+		const { program, renderer } = initWebGL(gl);
 		this.program = program;
+		this.renderer = renderer;
 		this.gl = gl;
 
 		const pickingTexture = createTexture(gl, canvas.width, canvas.height);
@@ -176,21 +177,21 @@ class Kubiki {
 				gl.enableVertexAttribArray(aNormal);
 				gl.vertexAttribPointer(aNormal, dimensions, gl.FLOAT, false, 0, 0);
 			}
-
+			// console.warn("##")
 			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
+			// console.warn("--", obj.geometry)
 		});
 	}
 	render(t) {
 		this.#computeCamera();
 		const { gl, params } = this;
-		gl.clearColor(...params.background);
+
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		gl.clear(this.gl.COLOR_BUFFER_BIT);
-		gl.clear(this.gl.DEPTH_BUFFER_BIT);
+		this.renderer.clear(...params.background);
 		this.renderObjects(this.objects, false);
+
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.pickingFramebuffer);
-		gl.clear(this.gl.COLOR_BUFFER_BIT);
-		gl.clear(this.gl.DEPTH_BUFFER_BIT);
+		this.renderer.clear(0, 0, 0, 0);
 		this.renderObjects(this.objects, true);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		return this;

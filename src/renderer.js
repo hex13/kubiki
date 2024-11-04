@@ -1,6 +1,11 @@
 import { vertexShaderSource, fragmentShaderSource } from './shaders.js';
 import { mat4 } from 'gl-matrix';
 
+// abstract class for renderers
+class Renderer {
+	camera = null;
+}
+
 function compileShader(gl, type, source) {
 	const shader = gl.createShader(type);
 	gl.shaderSource(shader, source);
@@ -17,8 +22,9 @@ export function createTexture(gl, width, height) {
 	return texture;
 }
 
-class WebGLRenderer {
+class WebGLRenderer extends Renderer {
 	constructor(gl, program) {
+		super();
 		this.gl = gl;
 		this.program = program;
 		this.projection = mat4.create();
@@ -77,6 +83,8 @@ class WebGLRenderer {
 		});
 	}
 	render() {
+		mat4.invert(this.viewMatrix, this.camera.transform.matrix);
+
 		const { gl } = this;
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		this.clear(...this.params.background);

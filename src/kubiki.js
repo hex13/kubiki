@@ -91,18 +91,15 @@ class Kubiki {
 		this.params = params;
 
 		this.camera = new SceneObject().position(0, 0, 20);
-		this.#computeCamera();
+		this.camera.computeMatrix();
 
 		this.objects = [];
 		this.renderer.objects = this.objects;
+		this.renderer.camera = this.camera;
 
 		['click','pointerdown', 'pointerup', 'pointermove'].forEach(type => {
 			this.renderer.enableEvent(type);
 		});
-	}
-	#computeCamera() {
-		this.camera.computeMatrix();
-		mat4.invert(this.renderer.viewMatrix, this.camera.transform.matrix);
 	}
 	add(obj) {
 		this.objects.push(obj);
@@ -113,7 +110,7 @@ class Kubiki {
 		return this;
 	}
 	render(t) {
-		this.#computeCamera();
+		this.camera.computeMatrix();
 		this.renderer.render();
 		return this;
 	}

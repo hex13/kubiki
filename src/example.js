@@ -45,7 +45,7 @@ box.on('pointerup', e => {
 });
 
 
-const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0, 1]})
+const kubiki = K.init({width: 1024, height: 768, background: [0, 0, 0.04, 1]})
 	.mount(document.body)
 	// .add(rect)
 	.add(box)

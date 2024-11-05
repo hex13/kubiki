@@ -3,6 +3,7 @@ import { triangleGeometry, rectGeometry, boxGeometry } from './geometries.js';
 import { createTerrain } from 'tileterrain';
 import { vec3 } from 'gl-matrix';
 import { WebGLRenderer } from './renderer.js';
+import { ThreeRenderer } from './ThreeRenderer.js';
 
 import { mat4 } from 'gl-matrix';
 
@@ -80,9 +81,10 @@ class Kubiki {
 		canvas.height = params.height;
 
 		this.canvas = canvas;
-		const gl = canvas.getContext('webgl');
+		const gl = canvas.getContext('webgl2');
 
-		const renderer = new WebGLRenderer(gl, params);
+		// const renderer = new WebGLRenderer(gl, params, this);
+		const renderer = new ThreeRenderer(gl, params, this);
 
 		this.renderer = renderer;
 
@@ -93,7 +95,6 @@ class Kubiki {
 
 		this.objects = [];
 		this.renderer.objects = this.objects;
-		this.renderer.camera = this.camera;
 
 		['click','pointerdown', 'pointerup', 'pointermove'].forEach(type => {
 			this.renderer.enableEvent(type);

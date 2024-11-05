@@ -4,6 +4,11 @@ import { mat4 } from 'gl-matrix';
 // abstract class for renderers
 export class Renderer {
 	camera = null;
+	constructor(gl, params, kubiki) {
+		this.gl = gl;
+		this.params = params;
+		this.kubiki = kubiki;
+	}
 	enableEvent() {
 
 	}
@@ -32,10 +37,8 @@ export function createTexture(gl, width, height) {
 }
 
 export class WebGLRenderer extends Renderer {
-	constructor(gl, params) {
-		super();
-		this.gl = gl;
-		this.params = params;
+	constructor(gl, params, kubiki) {
+		super(gl, params, kubiki);
 
 		let status;
 		const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
@@ -111,7 +114,7 @@ export class WebGLRenderer extends Renderer {
 		});
 	}
 	render() {
-		mat4.invert(this.viewMatrix, this.camera.transform.matrix);
+		mat4.invert(this.viewMatrix, this.kubiki.camera.transform.matrix);
 
 		const { gl } = this;
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);

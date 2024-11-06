@@ -35,11 +35,13 @@ export class ThreeRenderer extends Renderer{
 	render() {
 		this.objects.forEach((obj, i) => {
 			const { position, rotation, scale } = obj.transform;
+			const { color} = obj.material;
 
 			const mesh = obj.threeMesh;
 			mesh.position.set(position[0], position[1], position[2]);
 			mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
 			mesh.scale.set(scale[0], scale[1], scale[2]);
+			mesh.material.color.set(color[0], color[1], color[2])
 		});
 		// const [cameraX, cameraY, cameraZ] = this.kubiki.camera.transform.position;
 		this.camera.position.set(...this.kubiki.camera.transform.position);

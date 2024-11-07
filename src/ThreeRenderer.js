@@ -13,7 +13,7 @@ export class ThreeRenderer extends Renderer{
 
 		const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 'green'}));
 		// this.scene.add(mesh);
-		this.camera = new THREE.PerspectiveCamera(45, params.width / params.height);
+		this.camera = new THREE.PerspectiveCamera(params.camera.fov / Math.PI * 180, params.width / params.height);
 
 		const light = new THREE.DirectionalLight()
 		light.position.set(0, 1, 1);

@@ -59,7 +59,7 @@ export class WebGLRenderer extends Renderer {
 
 		this.projection = mat4.create();
 		this.viewMatrix = mat4.create();
-		mat4.perspective(this.projection, Math.PI / 3, params.width / params.height, 0.001, 100);
+		mat4.perspective(this.projection, params.camera.fov, params.width / params.height, 0.001, 100);
 		this.init();
 	}
 	init() {

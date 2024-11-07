@@ -73,6 +73,7 @@ export function triangle() {
 }
 
 class Kubiki {
+	loaders = [];
 	constructor(params) {
 		params = structuredClone(params);
 		params.background = params.background || [0, 0, 0, 1];
@@ -104,6 +105,15 @@ class Kubiki {
 		this.objects.push(obj);
 		this.renderer.add(obj);
 		return this;
+	}
+	addLoader(loader) {
+		this.loaders.push(loader);
+	}
+	load(params) {
+		for (let i = 0; i < this.loaders.length; i++) {
+			const obj = this.loaders[i](params);
+			if (obj) return obj;
+		}
 	}
 	mount(domEl) {
 		domEl.append(this.canvas);

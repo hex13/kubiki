@@ -1,5 +1,8 @@
 import { Renderer } from './renderer.js';
+import { SceneObject } from './SceneObject.js';
+
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export class ThreeRenderer extends Renderer{
 	constructor(gl, params, kubiki) {
@@ -20,6 +23,17 @@ export class ThreeRenderer extends Renderer{
 		this.scene.add(light);
 
 		this.raycaster = new THREE.Raycaster();
+
+		const gltfLoader = new GLTFLoader();
+		this.kubiki.addLoader(url => {
+			const obj = new SceneObject({vertices: new Float32Array, normals: new Float32Array});
+			const threeMesh = new THREE.Object3D();
+			gltfLoader.load(url, gltf => {
+				threeMesh.add(gltf.scene.clone());
+			});
+			obj.threeMesh = threeMesh;
+			return obj;
+		})
 	}
 	enableEvent(eventType) {
 		const { gl } = this;
@@ -41,17 +55,18 @@ export class ThreeRenderer extends Renderer{
 		});
 	}
 	add(obj) {
-		console.log("ADD", obj.geometry)
-		let geom = new THREE.BufferGeometry();
-		geom.setAttribute('position', new THREE.BufferAttribute(obj.geometry.vertices, 3));
-		geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
-		// geom = new THREE.BoxGeometry(1, 1, 1);
-		const mat = new THREE.MeshLambertMaterial({color: 'green'});
-		const mesh = new THREE.Mesh(geom, mat);
-		mesh.position.set(...obj.transform.position);
-		mesh.userData.obj = obj;
-		obj.threeMesh = mesh;
-		this.scene.add(mesh);
+		if (!obj.threeMesh) {
+			let geom = new THREE.BufferGeometry();
+			geom.setAttribute('position', new THREE.BufferAttribute(obj.geometry.vertices, 3));
+			geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
+			// geom = new THREE.BoxGeometry(1, 1, 1);
+			const mat = new THREE.MeshLambertMaterial({color: 'green'});
+			const mesh = new THREE.Mesh(geom, mat);
+			mesh.position.set(...obj.transform.position);
+			mesh.userData.obj = obj;
+			obj.threeMesh = mesh;
+		}
+		this.scene.add(obj.threeMesh);
 	}
 	render() {
 		this.objects.forEach((obj, i) => {
@@ -62,7 +77,9 @@ export class ThreeRenderer extends Renderer{
 			mesh.position.set(position[0], position[1], position[2]);
 			mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
 			mesh.scale.set(scale[0], scale[1], scale[2]);
-			mesh.material.color.set(color[0], color[1], color[2])
+			if (mesh.material) {
+				mesh.material.color.set(color[0], color[1], color[2])
+			}
 		});
 		// const [cameraX, cameraY, cameraZ] = this.kubiki.camera.transform.position;
 		this.camera.position.set(...this.kubiki.camera.transform.position);

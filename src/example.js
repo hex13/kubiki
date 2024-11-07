@@ -52,9 +52,14 @@ const kubiki = K.init({
 			fov: Math.PI/2,
 		}
 	})
-	.mount(document.body)
+	.mount(document.body);
+
+const house = kubiki.load('House.glb');
+
+kubiki
 	// .add(rect)
 	.add(box)
+	.add(house)
 	.add(K.box().color(1.0, 0.4, 0.4).position(3, 0, 0).scale(1, 1, 1).on('click', e => {
 		console.log("xD", e)
 	}))
@@ -67,6 +72,7 @@ kubiki.camera.lookAt(0, 0, 0);
 function update(t) {
 	box.color(Math.random() * 0.2 + 0.5, 1.0, 0.0);
 	box.rotation(v => v + 0.002, v => v - 0.01, z => z);
+	house.rotation(v => v - 0.01, v => v - 0.1, v => v);
 	// console.log("BOXO", box.transform.rotation)
 	// box.position(x => Math.cos(t * 0.002) * 4, y => Math.sin(t * 0.003) * 5, z => z);
 	// rect.scale(x => x + 0.01, y => y + 0.01, 1);

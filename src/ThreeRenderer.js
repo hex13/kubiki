@@ -19,6 +19,26 @@ export class ThreeRenderer extends Renderer{
 		light.position.set(0, 1, 1);
 		this.scene.add(light);
 
+		this.raycaster = new THREE.Raycaster();
+	}
+	enableEvent(eventType) {
+		const { gl } = this;
+		const { canvas } = gl;
+		canvas.addEventListener(eventType, e => {
+			const bounds = e.target.getBoundingClientRect();
+			const w = canvas.width;
+			const h = canvas.height;
+			const x = (e.clientX - bounds.x) / w * 2 - 1;
+			const y = -(e.clientY - bounds.y) / h * 2 + 1;
+			this.raycaster.setFromCamera({x, y}, this.camera);
+			const intersections = this.raycaster.intersectObjects(this.scene.children);
+			if (intersections.length) {
+				const obj = intersections[0].object.userData.obj;
+				if (obj) {
+					obj.emit(e.type, e);
+				}
+			}
+		});
 	}
 	add(obj) {
 		console.log("ADD", obj.geometry)
@@ -29,6 +49,7 @@ export class ThreeRenderer extends Renderer{
 		const mat = new THREE.MeshLambertMaterial({color: 'green'});
 		const mesh = new THREE.Mesh(geom, mat);
 		mesh.position.set(...obj.transform.position);
+		mesh.userData.obj = obj;
 		obj.threeMesh = mesh;
 		this.scene.add(mesh);
 	}

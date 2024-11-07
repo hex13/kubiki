@@ -49,8 +49,9 @@ box.on('pointerup', e => {
 const kubiki = K.init({
 		width: 1024, height: 768, background: [0, 0, 0.04, 1],
 		camera: {
-			fov: Math.PI/2,
-		}
+			fov: Math.PI / 3,
+		},
+		controls: 'orbit',
 	})
 	.mount(document.body);
 
@@ -70,6 +71,7 @@ kubiki
 
 kubiki.camera.lookAt(0, 0, 0);
 function update(t) {
+	kubiki.camera.position(x => x + 0.06, v => v, v => v);
 	box.color(Math.random() * 0.2 + 0.5, 1.0, 0.0);
 	box.rotation(v => v + 0.002, v => v - 0.01, z => z);
 	house.rotation(v => v - 0.01, v => v - 0.1, v => v);

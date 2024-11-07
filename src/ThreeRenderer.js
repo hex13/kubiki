@@ -2,6 +2,7 @@ import { Renderer } from './renderer.js';
 import { SceneObject } from './SceneObject.js';
 
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export class ThreeRenderer extends Renderer{
@@ -18,6 +19,7 @@ export class ThreeRenderer extends Renderer{
 		// this.scene.add(mesh);
 		this.camera = new THREE.PerspectiveCamera(params.camera.fov / Math.PI * 180, params.width / params.height);
 
+
 		const light = new THREE.DirectionalLight()
 		light.position.set(0, 1, 1);
 		this.scene.add(light);
@@ -33,7 +35,14 @@ export class ThreeRenderer extends Renderer{
 			});
 			obj.threeMesh = threeMesh;
 			return obj;
-		})
+		});
+
+		this.camera.position.set(...this.kubiki.camera.transform.position);
+
+		if (params.controls == 'orbit') {
+			this.cameraControls = new OrbitControls(this.camera, gl.canvas);
+		}
+
 	}
 	enableEvent(eventType) {
 		const { gl } = this;
@@ -74,6 +83,7 @@ export class ThreeRenderer extends Renderer{
 			const { color} = obj.material;
 
 			const mesh = obj.threeMesh;
+
 			mesh.position.set(position[0], position[1], position[2]);
 			mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
 			mesh.scale.set(scale[0], scale[1], scale[2]);
@@ -81,8 +91,11 @@ export class ThreeRenderer extends Renderer{
 				mesh.material.color.set(color[0], color[1], color[2])
 			}
 		});
-		// const [cameraX, cameraY, cameraZ] = this.kubiki.camera.transform.position;
-		this.camera.position.set(...this.kubiki.camera.transform.position);
+
+		if (!this.cameraControls) {
+			this.camera.position.set(...this.kubiki.camera.transform.position);
+		}
+
 		this.renderer.render(this.scene, this.camera);
 	}
 }

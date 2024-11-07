@@ -83,6 +83,8 @@ class Kubiki {
 
 		this.canvas = canvas;
 		const gl = canvas.getContext('webgl2');
+		this.camera = new SceneObject().position(0, 0, 20);
+		this.camera.computeMatrix();
 
 		// const renderer = new WebGLRenderer(gl, params, this);
 		const renderer = new ThreeRenderer(gl, params, this);
@@ -90,9 +92,6 @@ class Kubiki {
 		this.renderer = renderer;
 
 		this.params = params;
-
-		this.camera = new SceneObject().position(0, 0, 20);
-		this.camera.computeMatrix();
 
 		this.objects = [];
 		this.renderer.objects = this.objects;

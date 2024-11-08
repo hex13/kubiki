@@ -4,6 +4,7 @@ import { createTerrain } from 'tileterrain';
 import { vec3 } from 'gl-matrix';
 import { WebGLRenderer } from './renderer.js';
 import { ThreeRenderer } from './ThreeRenderer.js';
+import { Scheduler } from 'taska';
 
 import { mat4 } from 'gl-matrix';
 
@@ -99,6 +100,8 @@ class Kubiki {
 		['click','pointerdown', 'pointerup', 'pointermove'].forEach(type => {
 			this.renderer.enableEvent(type);
 		});
+
+		this.scheduler = new Scheduler();
 	}
 	add(obj) {
 		this.objects.push(obj);
@@ -119,6 +122,7 @@ class Kubiki {
 		return this;
 	}
 	render(t) {
+		this.scheduler.update(t);
 		this.camera.computeMatrix();
 		this.renderer.render();
 		return this;

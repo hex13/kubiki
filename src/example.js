@@ -5,8 +5,14 @@ const rect = K.rect().position(-1.4, 0, 0);
 const box = K.box().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3);
 
 box.on('click', e => {
-	console.log("clicked", e);
-	box.position(x => x, y => y + 1, z => z);
+	console.log("clickedo", e);
+	const y = box.transform.position[1];
+	kubiki.scheduler.schedule({
+		duration: 1000,
+		update(t, a) {
+			box.position(x => x, y * (1 - a) + (y+3) * a , z => z);
+		}
+	});
 });
 
 box.on('click', e => {

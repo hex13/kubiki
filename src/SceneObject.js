@@ -69,15 +69,15 @@ export class SceneObject {
 		}
 	}
 	animate(to, duration) {
-		const fromPos = [...this.transform.position];
-		const toPos = to.position || [...this.transform.position];
-		const fromRot = [...this.transform.rotation];
-		const toRot = to.position || [...this.transform.rotation];
+		const from = {
+			position: [...this.transform.position],
+			rotation: [...this.transform.rotation],
+			scale: [...this.transform.scale],
+		};
 		this.kubiki.scheduler.schedule({
 			duration,
 			update: (t, a) => {
-				this.transform.position = mixObjects(fromPos, toPos, a);
-				this.transform.rotation = mixObjects(fromRot, toRot, a);
+				this.transform = mixObjects(from, to, a);
 			}
 		});
 	}

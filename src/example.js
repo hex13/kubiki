@@ -9,6 +9,7 @@ box.on('click', e => {
 	box.animate({
 		position: [pos[0], pos[1] - 2, pos[2]],
 		rotation: [0, 0, 1],
+		scale: [2.2, 0.2, 0.2],
 	}, 1000);
 });
 

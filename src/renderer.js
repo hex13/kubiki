@@ -90,7 +90,7 @@ export class WebGLRenderer extends Renderer {
 			const uColor = gl.getUniformLocation(this.program, 'uColor');
 			gl.useProgram(this.program);
 			gl.uniform1i(uObjectIndex, picking? i + 1 : 0);
-			gl.uniform3fv(uColor, obj.material.color);
+			gl.uniform3fv(uColor, obj.transform.material.color);
 			obj.computeMatrix();
 			const transform = obj.transform.matrix;
 			gl.uniformMatrix4fv(uTransform, false, transform);

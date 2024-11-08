@@ -80,7 +80,7 @@ export class ThreeRenderer extends Renderer{
 	render() {
 		this.objects.forEach((obj, i) => {
 			const { position, rotation, scale } = obj.transform;
-			const { color} = obj.material;
+			const { color } = obj.transform.material;
 
 			const mesh = obj.threeMesh;
 

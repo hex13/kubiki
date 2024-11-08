@@ -9,10 +9,10 @@ export class SceneObject {
 		rotation: [0, 0, 0],
 		target: null,
 		matrix: mat4.create(),
+		material: {
+			color: [1.0, 1.0, 1.0],
+		},
 	};
-	material = {
-		color: [1.0, 1.0, 1.0],
-	}
 	listeners = Object.create(null);
 	constructor(geometry) {
 		this.geometry = geometry;
@@ -38,7 +38,7 @@ export class SceneObject {
 		return this;
 	}
 	color(r, g, b) {
-		const { color } = this.material;
+		const { color } = this.transform.material;
 		color[0] = r;
 		color[1] = g;
 		color[2] = b;
@@ -69,14 +69,11 @@ export class SceneObject {
 		}
 	}
 	animate(to, duration) {
-		const from = {
-			position: [...this.transform.position],
-			rotation: [...this.transform.rotation],
-			scale: [...this.transform.scale],
-		};
+		const from = structuredClone(this.transform);
 		return this.kubiki.scheduler.schedule({
 			duration,
 			update: (t, a) => {
+				console.log("AAAA", mixObjects(from, to, a))
 				this.transform = mixObjects(from, to, a);
 			}
 		});

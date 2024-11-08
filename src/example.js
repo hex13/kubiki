@@ -14,8 +14,10 @@ box.on('click', async e => {
 	await box.animate({
 		// position: [pos[0] - 10, pos[1] - 2, pos[2]],
 		scale: [5, 5, 5],
-		color: [1, 1, 0],
-	}, 300);
+		material: {
+			color: [1, 0, 0],
+		}
+	}, 1000);
 });
 
 box.on('click', e => {
@@ -81,7 +83,7 @@ kubiki
 kubiki.camera.lookAt(0, 0, 0);
 function update(t) {
 	kubiki.camera.position(x => x + 0.06, v => v, v => v);
-	box.color(Math.random() * 0.2 + 0.5, 1.0, 0.0);
+	// box.color(Math.random() * 0.2 + 0.5, 1.0, 0.0);
 	box.rotation(v => v + 0.002, v => v - 0.01, z => z);
 	house.rotation(v => v - 0.01, v => v - 0.1, v => v);
 	// console.log("BOXO", box.transform.rotation)

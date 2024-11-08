@@ -1,5 +1,5 @@
 import { mat4 } from 'gl-matrix';
-import { mix } from 'taska/src/utils';
+import { mix, mixObjects } from 'taska/src/utils';
 
 export class SceneObject {
 	kubiki = null;
@@ -74,11 +74,7 @@ export class SceneObject {
 		this.kubiki.scheduler.schedule({
 			duration,
 			update: (t, a) => {
-				this.position(
-					mix(fromPos[0], toPos[0], a),
-					mix(fromPos[1], toPos[1], a),
-					mix(fromPos[2], toPos[2], a),
-				);
+				this.transform.position = mixObjects(fromPos, toPos, a);
 			}
 		});
 	}

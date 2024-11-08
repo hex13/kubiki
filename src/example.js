@@ -12,9 +12,9 @@ box.on('click', async e => {
 		scale: [2.2, 0.2, 0.2],
 	}, 1000);
 	await box.animate({
-		position: [pos[0] - 10, pos[1] - 2, pos[2]],
-		rotation: [0, 0, 1],
-		scale: [2.2, 0.2, 0.2],
+		// position: [pos[0] - 10, pos[1] - 2, pos[2]],
+		scale: [5, 5, 5],
+		color: [1, 1, 0],
 	}, 300);
 });
 

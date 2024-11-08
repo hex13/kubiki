@@ -7,7 +7,8 @@ const box = K.box().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3);
 box.on('click', e => {
 	const pos = [...box.transform.position];
 	box.animate({
-		position: [pos[0], pos[1], pos[2] + 5],
+		position: [pos[0], pos[1] - 2, pos[2]],
+		rotation: [0, 0, 1],
 	}, 1000);
 });
 

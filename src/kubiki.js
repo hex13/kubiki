@@ -104,6 +104,7 @@ class Kubiki {
 		this.scheduler = new Scheduler();
 	}
 	add(obj) {
+		obj.kubiki = this;
 		this.objects.push(obj);
 		this.renderer.add(obj);
 		return this;

@@ -1,6 +1,8 @@
 import { mat4 } from 'gl-matrix';
+import { mix } from 'taska/src/utils';
 
 export class SceneObject {
+	kubiki = null;
 	transform = {
 		position: [0, 0, 0, 1],
 		scale: [1, 1, 1],
@@ -65,5 +67,19 @@ export class SceneObject {
 			mat4.rotateY(matrix, matrix, this.transform.rotation[1]);
 			mat4.rotateZ(matrix, matrix, this.transform.rotation[2]);
 		}
+	}
+	animate(to, duration) {
+		const fromPos = [...this.transform.position];
+		const toPos = to.position || [...this.transform.position];
+		this.kubiki.scheduler.schedule({
+			duration,
+			update: (t, a) => {
+				this.position(
+					mix(fromPos[0], toPos[0], a),
+					mix(fromPos[1], toPos[1], a),
+					mix(fromPos[2], toPos[2], a),
+				);
+			}
+		});
 	}
 }

@@ -74,7 +74,7 @@ export class SceneObject {
 			rotation: [...this.transform.rotation],
 			scale: [...this.transform.scale],
 		};
-		this.kubiki.scheduler.schedule({
+		return this.kubiki.scheduler.schedule({
 			duration,
 			update: (t, a) => {
 				this.transform = mixObjects(from, to, a);

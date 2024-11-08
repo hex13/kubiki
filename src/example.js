@@ -4,13 +4,18 @@ import { LineBuilder } from './LineBuilder.js';
 const rect = K.rect().position(-1.4, 0, 0);
 const box = K.box().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3);
 
-box.on('click', e => {
+box.on('click', async e => {
 	const pos = [...box.transform.position];
-	box.animate({
+	await box.animate({
 		position: [pos[0], pos[1] - 2, pos[2]],
 		rotation: [0, 0, 1],
 		scale: [2.2, 0.2, 0.2],
 	}, 1000);
+	await box.animate({
+		position: [pos[0] - 10, pos[1] - 2, pos[2]],
+		rotation: [0, 0, 1],
+		scale: [2.2, 0.2, 0.2],
+	}, 300);
 });
 
 box.on('click', e => {

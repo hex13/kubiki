@@ -4,6 +4,7 @@ import { mat4 } from 'gl-matrix';
 // abstract class for renderers
 export class Renderer {
 	camera = null;
+	objects = [];
 	constructor(gl, params, kubiki) {
 		this.gl = gl;
 		this.params = params;
@@ -150,5 +151,9 @@ export class WebGLRenderer extends Renderer {
 				}
 			}
 		});
+	}
+	add(obj) {
+		if (obj.coords != '3D') return;
+		this.objects.push(obj);
 	}
 }

@@ -64,6 +64,8 @@ export class ThreeRenderer extends Renderer{
 		});
 	}
 	add(obj) {
+		if (obj.coords != '3D') return;
+		this.objects.push(obj);
 		if (!obj.threeMesh) {
 			let geom = new THREE.BufferGeometry();
 			geom.setAttribute('position', new THREE.BufferAttribute(obj.geometry.vertices, 3));

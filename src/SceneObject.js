@@ -14,8 +14,9 @@ export class SceneObject {
 		},
 	};
 	listeners = Object.create(null);
-	constructor(geometry) {
+	constructor(geometry, coordsKind = '3D') {
 		this.geometry = geometry;
+		this.coords = coordsKind;
 	}
 	setTransformItem(name, ...args) {
 		const v = this.transform[name];

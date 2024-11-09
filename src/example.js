@@ -68,6 +68,7 @@ const kubiki = K.init({
 
 const house = kubiki.load('House.glb');
 
+const something2D = K.something2D().position(100, 100, 0);
 kubiki
 	// .add(rect)
 	.add(box)
@@ -75,6 +76,7 @@ kubiki
 	.add(K.box().color(1.0, 0.4, 0.4).position(3, 0, 0).scale(1, 1, 1).on('click', e => {
 		console.log("xD", e)
 	}))
+	.add(something2D)
 	.add(K.terrain({ columns: 10, rows: 6}).rotation(-Math.PI/4, 0, 0 ))
 	// .add(K.rect().position(1.4, 0))
 	// .add(K.triangle())
@@ -82,6 +84,7 @@ kubiki
 
 kubiki.camera.lookAt(0, 0, 0);
 function update(t) {
+	something2D.position(x => x + 0.4, y => y, z => z);
 	kubiki.camera.position(x => x + 0.06, v => v, v => v);
 	// box.color(Math.random() * 0.2 + 0.5, 1.0, 0.0);
 	box.rotation(v => v + 0.002, v => v - 0.01, z => z);

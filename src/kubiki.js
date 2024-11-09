@@ -4,6 +4,7 @@ import { createTerrain } from 'tileterrain';
 import { vec3 } from 'gl-matrix';
 import { WebGLRenderer } from './renderer.js';
 import { ThreeRenderer } from './ThreeRenderer.js';
+import { DomRenderer } from './DomRenderer.js';
 import { Scheduler } from 'taska';
 
 import { mat4 } from 'gl-matrix';
@@ -73,6 +74,10 @@ export function triangle() {
 	return new SceneObject(triangleGeometry);
 }
 
+export function something2D() {
+	return new SceneObject(null, '2D');
+}
+
 class Kubiki {
 	loaders = [];
 	objects = [];
@@ -93,12 +98,13 @@ class Kubiki {
 
 		let renderer;
 		renderer = new WebGLRenderer(gl, params, this);
-		renderer.objects = this.objects;
 		this.renderers.push(renderer);
 
 		renderer = new ThreeRenderer(gl, params, this);
-		renderer.objects = this.objects;
 		this.renderers.push(renderer);
+
+		this.renderers.push(new DomRenderer(gl, params, this));
+
 
 		['click','pointerdown', 'pointerup', 'pointermove'].forEach(type => {
 			this.renderers.forEach(renderer => renderer.enableEvent(type));

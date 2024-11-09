@@ -37,8 +37,13 @@ export function createTexture(gl, width, height) {
 }
 
 export class WebGLRenderer extends Renderer {
-	constructor(gl, params, kubiki) {
+	constructor(gl_, params, kubiki) {
+		const canvas = document.createElement('canvas');
+		canvas.width = params.width;
+		canvas.height = params.height;
+		const gl = canvas.getContext('webgl2');
 		super(gl, params, kubiki);
+		document.body.append(canvas);
 
 		let status;
 		const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);

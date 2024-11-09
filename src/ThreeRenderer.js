@@ -8,10 +8,12 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 export class ThreeRenderer extends Renderer{
 	constructor(gl, params, kubiki) {
 		super(gl, params, kubiki);
-		this.renderer = new THREE.WebGLRenderer({ context: gl });
+		this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setSize(params.width, params.height);
 		this.renderer.setClearColor(new THREE.Color(...params.background));
 		this.renderer.clear();
+		this.canvas = this.renderer.domElement;
+		document.body.append(this.canvas);
 
 		this.scene = new THREE.Scene();
 
@@ -42,11 +44,9 @@ export class ThreeRenderer extends Renderer{
 		if (params.controls == 'orbit') {
 			this.cameraControls = new OrbitControls(this.camera, gl.canvas);
 		}
-
 	}
 	enableEvent(eventType) {
-		const { gl } = this;
-		const { canvas } = gl;
+		const { canvas } = this;
 		canvas.addEventListener(eventType, e => {
 			const bounds = e.target.getBoundingClientRect();
 			const w = canvas.width;

@@ -75,9 +75,13 @@ export function triangle() {
 
 class Kubiki {
 	loaders = [];
+	objects = [];
+	renderers = [];
 	constructor(params) {
 		params = structuredClone(params);
 		params.background = params.background || [0, 0, 0, 1];
+		this.params = params;
+
 		const canvas = document.createElement('canvas');
 		canvas.width = params.width;
 		canvas.height = params.height;
@@ -87,18 +91,17 @@ class Kubiki {
 		this.camera = new SceneObject().position(0, 0, 20);
 		this.camera.computeMatrix();
 
-		// const renderer = new WebGLRenderer(gl, params, this);
-		const renderer = new ThreeRenderer(gl, params, this);
+		let renderer;
+		renderer = new WebGLRenderer(gl, params, this);
+		renderer.objects = this.objects;
+		this.renderers.push(renderer);
 
-		this.renderer = renderer;
-
-		this.params = params;
-
-		this.objects = [];
-		this.renderer.objects = this.objects;
+		renderer = new ThreeRenderer(gl, params, this);
+		renderer.objects = this.objects;
+		this.renderers.push(renderer);
 
 		['click','pointerdown', 'pointerup', 'pointermove'].forEach(type => {
-			this.renderer.enableEvent(type);
+			this.renderers.forEach(renderer => renderer.enableEvent(type));
 		});
 
 		this.scheduler = new Scheduler();
@@ -106,7 +109,7 @@ class Kubiki {
 	add(obj) {
 		obj.kubiki = this;
 		this.objects.push(obj);
-		this.renderer.add(obj);
+		this.renderers.forEach(renderer => renderer.add(obj));
 		return this;
 	}
 	addLoader(loader) {
@@ -117,6 +120,7 @@ class Kubiki {
 			const obj = this.loaders[i](params);
 			if (obj) return obj;
 		}
+		return new SceneObject(boxGeometry);
 	}
 	mount(domEl) {
 		domEl.append(this.canvas);
@@ -125,7 +129,7 @@ class Kubiki {
 	render(t) {
 		this.scheduler.update(t);
 		this.camera.computeMatrix();
-		this.renderer.render();
+		this.renderers.forEach(renderer => renderer.render());
 		return this;
 	}
 }

@@ -74,7 +74,6 @@ export class SceneObject {
 		return this.kubiki.scheduler.schedule({
 			duration,
 			update: (t, a) => {
-				console.log("AAAA", mixObjects(from, to, a))
 				this.transform = mixObjects(from, to, a);
 			}
 		});

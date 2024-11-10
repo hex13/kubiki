@@ -64,9 +64,9 @@ export class ThreeRenderer extends Renderer{
 		});
 	}
 	add(obj) {
-		if (obj.coords != '3D') return;
+		// if (obj.coords != '3D') return;
 		this.objects.push(obj);
-		if (!obj.threeMesh) {
+		if (!obj.threeMesh && obj.geometry) {
 			let geom = new THREE.BufferGeometry();
 			geom.setAttribute('position', new THREE.BufferAttribute(obj.geometry.vertices, 3));
 			geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
@@ -77,20 +77,32 @@ export class ThreeRenderer extends Renderer{
 			mesh.userData.obj = obj;
 			obj.threeMesh = mesh;
 		}
-		this.scene.add(obj.threeMesh);
+		if (obj.threeMesh) {
+			this.scene.add(obj.threeMesh);
+		}
+
 	}
 	render() {
+		const { camera } = this;
+		const { width, height } = this.params;
+		const v = new THREE.Vector3();
 		this.objects.forEach((obj, i) => {
 			const { position, rotation, scale } = obj.transform;
 			const { color } = obj.transform.material;
 
 			const mesh = obj.threeMesh;
-
-			mesh.position.set(position[0], position[1], position[2]);
-			mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
-			mesh.scale.set(scale[0], scale[1], scale[2]);
-			if (mesh.material) {
-				mesh.material.color.set(color[0], color[1], color[2])
+			if (mesh) {
+				mesh.position.set(position[0], position[1], position[2]);
+				mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
+				mesh.scale.set(scale[0], scale[1], scale[2]);
+				if (mesh.material) {
+					mesh.material.color.set(color[0], color[1], color[2])
+				}
+			}
+			if (obj.coords == '2D') {
+				v.set(obj.transform.position[0], obj.transform.position[1], obj.transform.position[2]);
+				v.project(camera);
+				obj.transform.projected = [(v.x / 2 + 0.5) * width, (-v.y / 2 + 0.5) * height];
 			}
 		});
 

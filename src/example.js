@@ -83,11 +83,43 @@ kubiki
 	// .add(K.triangle().position(0, -2.0));
 
 kubiki.camera.lookAt(0, 0, 0);
+
+async function foo() {
+	const target = house;
+	await target.animate({
+		position: [10, 0, 0],
+	}, 3000);
+	await target.animate({
+		position: [-10, 4, 0],
+	}, 3000);
+	await target.animate({
+		position: [0, 0, 0],
+	}, 3000);
+
+}
+
+foo();
 function update(t) {
-	something2D.position(x => x + 0.4, y => y, z => z);
-	kubiki.camera.position(x => x + 0.06, v => v, v => v);
+
+	// const renderer = kubiki.renderers[0];
+	// const camera = renderer.camera;
+	// const v = new THREE.Vector3();
+	// v.set(house.transform.position[0], house.transform.position[1], house.transform.position[2])
+	// camera.updateProjectionMatrix();
+	// v.project(camera);
+	// const { width, height } = renderer.canvas;
+
+	// something2D.position((v.x / 2 + 0.5) * width, (-v.y / 2 + 0.5) * height, 0);
+
+	// something2D.position((v.x / 2 + 0.5) * width, (-v.y / 2 + 0.5) * height, 0);
+
+	something2D.position(...house.transform.position);
+
+	// kubiki.camera.position(x => x + 0.06, v => v, v => v);
 	// box.color(Math.random() * 0.2 + 0.5, 1.0, 0.0);
-	box.rotation(v => v + 0.002, v => v - 0.01, z => z);
+	// box.rotation(v => v + 0.002, v => v - 0.01, z => z);
+	// box.position(x => x + 0.03, y => y + 0.03, z => z);
+
 	house.rotation(v => v - 0.01, v => v - 0.1, v => v);
 	// console.log("BOXO", box.transform.rotation)
 	// box.position(x => Math.cos(t * 0.002) * 4, y => Math.sin(t * 0.003) * 5, z => z);

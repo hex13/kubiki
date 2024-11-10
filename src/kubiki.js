@@ -96,13 +96,9 @@ class Kubiki {
 		this.camera = new SceneObject().position(0, 0, 20);
 		this.camera.computeMatrix();
 
-		let renderer;
-		renderer = new WebGLRenderer(gl, params, this);
-		this.renderers.push(renderer);
 
-		renderer = new ThreeRenderer(gl, params, this);
-		this.renderers.push(renderer);
-
+		this.renderers.push(new ThreeRenderer(gl, params, this));
+		this.renderers.push( new WebGLRenderer(gl, params, this));
 		this.renderers.push(new DomRenderer(gl, params, this));
 
 

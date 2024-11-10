@@ -80,7 +80,12 @@ export class ThreeRenderer extends Renderer{
 		if (obj.threeMesh) {
 			this.scene.add(obj.threeMesh);
 		}
-
+	}
+	remove(obj) {
+		super.remove(obj);
+		if (obj.threeMesh) {
+			obj.threeMesh.removeFromParent();
+		}
 	}
 	render() {
 		const { camera } = this;

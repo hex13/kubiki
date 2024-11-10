@@ -122,6 +122,14 @@ class Kubiki {
 		this.renderers.forEach(renderer => renderer.add(obj));
 		return this;
 	}
+	remove(obj) {
+		const idx = this.objects.indexOf(obj);
+		if (idx >= 0) {
+			this.objects.splice(idx, 1);
+		}
+		this.renderers.forEach(renderer => renderer.remove(obj));
+
+	}
 	addLoader(loader) {
 		this.loaders.push(loader);
 	}

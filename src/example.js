@@ -22,6 +22,7 @@ box.on('click', async e => {
 
 box.on('click', e => {
 	console.log("$$$$")
+	box.remove();
 });
 
 

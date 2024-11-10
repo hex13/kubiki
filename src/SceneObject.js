@@ -79,4 +79,7 @@ export class SceneObject {
 			}
 		});
 	}
+	remove() {
+		this.kubiki.remove(this);
+	}
 }

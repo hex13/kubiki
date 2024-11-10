@@ -78,6 +78,14 @@ export function something2D() {
 	return new SceneObject(null, '2D');
 }
 
+export function label(text) {
+	const label = new SceneObject(null, '2D');
+	label.type = 'label';
+	label.text = text;
+	return label;
+}
+
+
 class Kubiki {
 	loaders = [];
 	objects = [];

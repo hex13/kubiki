@@ -68,7 +68,7 @@ const kubiki = K.init({
 
 const house = kubiki.load('House.glb');
 
-const something2D = K.something2D().position(100, 100, 0);
+const something2D = K.label('kotek').position(100, 100, 0);
 kubiki
 	// .add(rect)
 	.add(box)
@@ -89,6 +89,7 @@ async function foo() {
 	await target.animate({
 		position: [10, 0, 0],
 	}, 3000);
+	something2D.text = ':)';
 	await target.animate({
 		position: [-10, 4, 0],
 	}, 3000);

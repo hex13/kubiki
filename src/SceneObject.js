@@ -3,6 +3,7 @@ import { mix, mixObjects } from 'taska/src/utils';
 
 export class SceneObject {
 	kubiki = null;
+	type = '';
 	transform = {
 		position: [0, 0, 0, 1],
 		scale: [1, 1, 1],

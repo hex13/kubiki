@@ -69,6 +69,28 @@ const kubiki = K.init({
 
 const house = kubiki.load('House.glb');
 
+const dynamic = kubiki.dynamic({
+	foo: (k, v) => {
+		console.log("fooo", k, v)
+		if (!v) return null;
+		return kubiki.load('House.glb').position(0, 0, 0);
+	},
+	counter: (k, v, instance) => {
+		if (!instance) instance = kubiki.load('House.glb');
+		instance.position(x => x, y => y - 0.3, z => z);
+		return instance;
+	}
+});
+
+dynamic.state.counter = 0;
+setInterval(() => {
+	dynamic.update(d => {
+		d.foo = !d.foo;
+		d.counter++;
+	});
+}, 500);
+
+
 const something2D = K.label('kotek').position(100, 100, 0);
 kubiki
 	// .add(rect)

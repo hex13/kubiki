@@ -6,6 +6,8 @@ import { WebGLRenderer } from './renderer.js';
 import { ThreeRenderer } from './ThreeRenderer.js';
 import { DomRenderer } from './DomRenderer.js';
 import { Scheduler } from 'taska';
+import { Reconciler } from './Reconciler';
+
 
 import { mat4 } from 'gl-matrix';
 
@@ -149,5 +151,16 @@ class Kubiki {
 		this.camera.computeMatrix();
 		this.renderers.forEach(renderer => renderer.render());
 		return this;
+	}
+	dynamic(handlers) {
+		const state = {};
+		const reconciler = new Reconciler(handlers, this.add.bind(this), this.remove.bind(this));
+		return {
+			state,
+			update: f => {
+				f(state);
+				reconciler.update(state);
+			}
+		}
 	}
 }

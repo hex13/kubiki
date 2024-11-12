@@ -119,8 +119,7 @@ export class ThreeRenderer extends Renderer{
 
 					for (let i = 0; i < 4; i++) {
 						const wall = room.walls[i];
-						// nextWall(i % 2 == 0? room.width : room.height);
-						let length = i % 2 == 0? room.width : room.height;
+						let length = i % 2 == 0? room.width : room.height - 2 * room.wallThickness;
 						if (wall.doors.length) {
 							let lastPos = 0;
 							for (let doorIdx = 0; doorIdx < wall.doors.length; doorIdx++) {
@@ -134,7 +133,16 @@ export class ThreeRenderer extends Renderer{
 						} else {
 							nextWall(length);
 						}
-						rotation += Math.PI / 2;
+
+						if (i % 2 == 0) {
+							nextPos(-room.wallThickness / 2);
+							rotation += Math.PI / 2;
+							nextPos(room.wallThickness / 2);
+						} else {
+							nextPos(room.wallThickness / 2);
+							rotation += Math.PI / 2;
+							nextPos(-room.wallThickness / 2);
+						}
 					}
 				}
 

@@ -72,6 +72,12 @@ export function box() {
 	return new SceneObject(boxGeometry);
 }
 
+export function instanced() {
+	const obj = new SceneObject(boxGeometry);
+	obj.instanced = true;
+	return obj;
+}
+
 export function triangle() {
 	return new SceneObject(triangleGeometry);
 }

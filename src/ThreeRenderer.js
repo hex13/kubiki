@@ -68,18 +68,27 @@ export class ThreeRenderer extends Renderer{
 	add(obj) {
 		// if (obj.coords != '3D') return;
 		this.objects.push(obj);
-		if (!obj.threeMesh && obj.geometry) {
-			let geom = new THREE.BufferGeometry();
-			geom.setAttribute('position', new THREE.BufferAttribute(obj.geometry.vertices, 3));
-			geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
-			// geom = new THREE.BoxGeometry(1, 1, 1);
+		let geom;
+		if (!obj.threeMesh) {
 			const mat = new THREE.MeshLambertMaterial({color: 'green'});
-			const mesh = new THREE.Mesh(geom, mat);
-			mesh.position.set(...obj.transform.position);
-			mesh.userData.obj = obj;
-			obj.threeMesh = mesh;
+			if (obj.geometry) {
+				geom = new THREE.BufferGeometry();
+				geom.setAttribute('position', new THREE.BufferAttribute(obj.geometry.vertices, 3));
+				geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
+			}
+			if (obj.instanced) {
+				const mesh = new THREE.InstancedMesh(geom, mat, 2);
+				mesh.geometry = geom;
+				obj.threeMesh = mesh;
+			} else {
+				const mesh = new THREE.Mesh(geom, mat);
+				mesh.position.set(...obj.transform.position);
+				obj.threeMesh = mesh;
+			}
 		}
+
 		if (obj.threeMesh) {
+			obj.threeMesh.userData.obj = obj;
 			this.scene.add(obj.threeMesh);
 		}
 	}

@@ -32,7 +32,7 @@ requestAnimationFrame(update)
 - [x] DOM rendering (for e.g. labels)
 - [x] easy adding events 
 - [ ] reactivity out of the box
-- [ ] utility for creating room geometries (width, height, where are doors, windows...)
+- [x] utility for creating room geometries (width, height, where are doors, windows...)
 - [ ] dev tools
 - [ ] utils for shaders
 

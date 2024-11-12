@@ -21,10 +21,12 @@ export class ThreeRenderer extends Renderer{
 		// this.scene.add(mesh);
 		this.camera = new THREE.PerspectiveCamera(params.camera.fov / Math.PI * 180, params.width / params.height);
 
-
 		const light = new THREE.DirectionalLight()
 		light.position.set(0, 1, 1);
 		this.scene.add(light);
+
+		const ambientLight = new THREE.AmbientLight(0x333333);
+		this.scene.add(ambientLight);
 
 		this.raycaster = new THREE.Raycaster();
 

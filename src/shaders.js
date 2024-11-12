@@ -35,7 +35,12 @@ void main() {
 	}
 	vec4 lightDirection = normalize(vec4(0.3, 0.0, -1.0, 1.0));
 	float light = dot(-lightDirection, normalize(vNormal)) * 0.5;
-	float a = 0.5 + light;
-	gl_FragColor = vec4(a * uColor.r, a * uColor.g, a * uColor.b, 1.0);
+	float a = 0.4 + light;
+	gl_FragColor = vec4(
+		min(1.0, a * uColor.r),
+		min(1.0, a * uColor.g),
+		min(1.0, a * uColor.b),
+		1.0
+	);
 }
 `;

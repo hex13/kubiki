@@ -77,9 +77,29 @@ export class ThreeRenderer extends Renderer{
 				geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
 			}
 			if (obj.instanced) {
-				const mesh = new THREE.InstancedMesh(geom, mat, 2);
+				const mesh = new THREE.InstancedMesh(geom, mat, 4);
 				mesh.geometry = geom;
 				obj.threeMesh = mesh;
+
+				if (obj.room) {
+					const { room } = obj;
+					const dummy = new THREE.Object3D();
+
+					let idx = 0;
+					for (let i = 0; i < 2; i++, idx++) {
+						dummy.position.set(room.width / 2, i * room.height, 0);
+						dummy.scale.set(room.width, room.wallThickness, 1);
+						dummy.updateMatrix();
+						mesh.setMatrixAt(idx, dummy.matrix);
+					}
+					for (let i = 0; i < 2; i++, idx++) {
+						dummy.position.set(i * room.width, room.height / 2, 0);
+						dummy.scale.set(room.wallThickness, room.height, 1);
+						dummy.updateMatrix();
+						mesh.setMatrixAt(idx, dummy.matrix);
+					}
+				}
+
 			} else {
 				const mesh = new THREE.Mesh(geom, mat);
 				mesh.position.set(...obj.transform.position);

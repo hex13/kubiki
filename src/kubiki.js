@@ -77,6 +77,11 @@ export function instanced() {
 	obj.instanced = true;
 	return obj;
 }
+export function room(params) {
+	const obj = instanced();
+	obj.room = params;
+	return obj;
+}
 
 export function triangle() {
 	return new SceneObject(triangleGeometry);

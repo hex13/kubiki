@@ -106,6 +106,10 @@ class Kubiki {
 	constructor(params) {
 		params = structuredClone(params);
 		params.background = params.background || [0, 0, 0, 1];
+		params.camera = params.camera || {
+			fov: Math.PI / 3,
+		};
+
 		this.params = params;
 
 		const canvas = document.createElement('canvas');

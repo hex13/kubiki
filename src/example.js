@@ -60,9 +60,6 @@ box.on('pointerup', e => {
 
 const kubiki = K.init({
 		width: 1024, height: 768, background: [0, 0, 0.04, 1],
-		camera: {
-			fov: Math.PI / 3,
-		},
 		controls: 'orbit',
 	})
 	.mount(document.body);

@@ -1,9 +1,16 @@
 import * as K from '../src/kubiki.js';
 
 const box = K.room({
-	width: 3,
+	width: 6,
 	height: 4,
-	wallThickness: 0.2
+	wallThickness: 0.2,
+	doorLength: 1,
+	walls: [
+		{doors: [2, 3]},
+		{doors: []},
+		{doors: []},
+		{doors: [3.2]},
+	],
 }).position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3)
 	.on('click', () => {
 		alert('clicked');

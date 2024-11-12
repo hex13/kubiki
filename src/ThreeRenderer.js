@@ -77,26 +77,64 @@ export class ThreeRenderer extends Renderer{
 				geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
 			}
 			if (obj.instanced) {
-				const mesh = new THREE.InstancedMesh(geom, mat, 4);
-				mesh.geometry = geom;
-				obj.threeMesh = mesh;
-
 				if (obj.room) {
+					const instanceCount = obj.room.walls.reduce((count, wall) => {
+						return count + wall.doors.length + 1;
+					}, 0);
+					console.log('insta', instanceCount)
+					const mesh = new THREE.InstancedMesh(geom, mat, instanceCount);
+					mesh.geometry = geom;
+					obj.threeMesh = mesh;
+
 					const { room } = obj;
 					const dummy = new THREE.Object3D();
 
-					let idx = 0;
-					for (let i = 0; i < 2; i++, idx++) {
-						dummy.position.set(room.width / 2, i * room.height, 0);
-						dummy.scale.set(room.width, room.wallThickness, 1);
+					for (let i = 0; i < mesh.count; i++) {
+						dummy.scale.set(0, 0, 0);
 						dummy.updateMatrix();
-						mesh.setMatrixAt(idx, dummy.matrix);
+						mesh.setMatrixAt(i, dummy.matrix);
 					}
-					for (let i = 0; i < 2; i++, idx++) {
-						dummy.position.set(i * room.width, room.height / 2, 0);
-						dummy.scale.set(room.wallThickness, room.height, 1);
+					let idx = 0;
+					let x = 0;
+					let y = 0;
+					let isVertical = false;
+					let rotation = 0;
+					const nextPos = (length) => {
+						const dx = Math.cos(rotation) * length;
+						const dy = Math.sin(rotation) * length;
+						x += dx;
+						y += dy;
+					}
+					const nextWall = (length) => {
+						const dx = Math.cos(rotation) * length;
+						const dy = Math.sin(rotation) * length;
+						dummy.position.set(x + dx / 2, y + dy / 2, 0);
+						nextPos(length);
+						dummy.scale.set(length, room.wallThickness, 1);
+						dummy.rotation.set(0, 0, rotation);
 						dummy.updateMatrix();
 						mesh.setMatrixAt(idx, dummy.matrix);
+						idx++;
+					};
+
+					for (let i = 0; i < 4; i++) {
+						const wall = room.walls[i];
+						// nextWall(i % 2 == 0? room.width : room.height);
+						let length = i % 2 == 0? room.width : room.height;
+						if (wall.doors.length) {
+							let lastPos = 0;
+							for (let doorIdx = 0; doorIdx < wall.doors.length; doorIdx++) {
+								nextWall(wall.doors[doorIdx] - lastPos);
+								nextPos(room.doorLength);
+								lastPos = wall.doors[doorIdx] + room.doorLength;
+							}
+							if (lastPos < length) {
+								nextWall(length - lastPos);
+							}
+						} else {
+							nextWall(length);
+						}
+						rotation += Math.PI / 2;
 					}
 				}
 

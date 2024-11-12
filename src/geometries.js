@@ -121,40 +121,19 @@ const w = 5;
 const h = 3;
 
 wallBuilder
-	.log()
-	.forward()
-	.wrap().forward()
-	.wrap().forward()
-	.wrap().forward()
+	.forward(1)
+	.wrap().forward(1)
+	.wrap().forward(1)
+	.wrap().forward(1)
 	.wrap()
 	.turn()
 	.skip()
 	.wrap()
 	.forward() // top
- 	.wrap()
- 	.skip()
-	.wrap().forward() // bottom
-	// .turn90('x', -1)
-	// .forward()
-	// .left()
-
-// wallBuilder
-// 	.forward(w)
-// 	.left()
-// 	.forward(h)
-// 	.left()
-// 	.forward(w)
-// 	.left()
-// 	.forward(1)
-// 	.moveBy([0, 0, 1])
-// 	.forward(h - 2)
-// 	.left()
-// 	.moveBy([0, 0, - h + 1])
-// 	.forward(w - 1)
-// 	.right()
-// 	.forward(h - 2)
-// 	.right()
-// 	.forward(w - 1)
+	.wrap()
+	.skip()
+	.wrap()
+	.forward() // bottom
 
 
 export const boxGeometry = {
@@ -165,4 +144,3 @@ export const boxGeometry = {
 		...wallBuilder.normals,
 	]),
 };
-

@@ -77,78 +77,19 @@ export class ThreeRenderer extends Renderer{
 				geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
 			}
 			if (obj.instanced) {
-				if (obj.room) {
-					const instanceCount = obj.room.walls.reduce((count, wall) => {
-						return count + wall.doors.length + 1;
-					}, 0);
-					console.log('insta', instanceCount)
-					const mesh = new THREE.InstancedMesh(geom, mat, instanceCount);
-					mesh.geometry = geom;
-					obj.threeMesh = mesh;
+				const { instances } = obj;
+				const mesh = new THREE.InstancedMesh(geom, mat, instances.length);
+				mesh.geometry = geom;
+				obj.threeMesh = mesh;
+				const dummy = new THREE.Object3D();
 
-					const { room } = obj;
-					const instances = [];
-					const dummy = new THREE.Object3D();
-					let idx = 0;
-					let x = 0;
-					let y = 0;
-					let isVertical = false;
-					let rotation = 0;
-					const nextPos = (length) => {
-						const dx = Math.cos(rotation) * length;
-						const dy = Math.sin(rotation) * length;
-						x += dx;
-						y += dy;
-					}
-					const nextWall = (length) => {
-						const dx = Math.cos(rotation) * length;
-						const dy = Math.sin(rotation) * length;
-						instances[idx] = {
-							position: [x + dx / 2, y + dy / 2, 0],
-							rotation: [0, 0, rotation],
-							scale: [length, room.wallThickness, 1],
-						};
-						nextPos(length);
-						idx++;
-					};
-
-					for (let i = 0; i < 4; i++) {
-						const wall = room.walls[i];
-						let length = i % 2 == 0? room.width : room.height - 2 * room.wallThickness;
-						if (wall.doors.length) {
-							let lastPos = 0;
-							for (let doorIdx = 0; doorIdx < wall.doors.length; doorIdx++) {
-								nextWall(wall.doors[doorIdx] - lastPos);
-								nextPos(room.doorLength);
-								lastPos = wall.doors[doorIdx] + room.doorLength;
-							}
-							if (lastPos < length) {
-								nextWall(length - lastPos);
-							}
-						} else {
-							nextWall(length);
-						}
-
-						if (i % 2 == 0) {
-							nextPos(-room.wallThickness / 2);
-							rotation += Math.PI / 2;
-							nextPos(room.wallThickness / 2);
-						} else {
-							nextPos(room.wallThickness / 2);
-							rotation += Math.PI / 2;
-							nextPos(-room.wallThickness / 2);
-						}
-					}
-
-					instances.forEach((transform, i) => {
-						dummy.position.set(...transform.position);
-						dummy.scale.set(...transform.scale);
-						dummy.rotation.set(...transform.rotation);
-						dummy.updateMatrix();
-						mesh.setMatrixAt(i, dummy.matrix);
-					});
-				}
-
+				instances.forEach((transform, i) => {
+					dummy.position.set(...transform.position);
+					dummy.scale.set(...transform.scale);
+					dummy.rotation.set(...transform.rotation);
+					dummy.updateMatrix();
+					mesh.setMatrixAt(i, dummy.matrix);
+				});
 			} else {
 				const mesh = new THREE.Mesh(geom, mat);
 				mesh.position.set(...obj.transform.position);

@@ -87,13 +87,8 @@ export class ThreeRenderer extends Renderer{
 					obj.threeMesh = mesh;
 
 					const { room } = obj;
+					const instances = [];
 					const dummy = new THREE.Object3D();
-
-					for (let i = 0; i < mesh.count; i++) {
-						dummy.scale.set(0, 0, 0);
-						dummy.updateMatrix();
-						mesh.setMatrixAt(i, dummy.matrix);
-					}
 					let idx = 0;
 					let x = 0;
 					let y = 0;
@@ -108,12 +103,12 @@ export class ThreeRenderer extends Renderer{
 					const nextWall = (length) => {
 						const dx = Math.cos(rotation) * length;
 						const dy = Math.sin(rotation) * length;
-						dummy.position.set(x + dx / 2, y + dy / 2, 0);
+						instances[idx] = {
+							position: [x + dx / 2, y + dy / 2, 0],
+							rotation: [0, 0, rotation],
+							scale: [length, room.wallThickness, 1],
+						};
 						nextPos(length);
-						dummy.scale.set(length, room.wallThickness, 1);
-						dummy.rotation.set(0, 0, rotation);
-						dummy.updateMatrix();
-						mesh.setMatrixAt(idx, dummy.matrix);
 						idx++;
 					};
 
@@ -144,6 +139,14 @@ export class ThreeRenderer extends Renderer{
 							nextPos(-room.wallThickness / 2);
 						}
 					}
+
+					instances.forEach((transform, i) => {
+						dummy.position.set(...transform.position);
+						dummy.scale.set(...transform.scale);
+						dummy.rotation.set(...transform.rotation);
+						dummy.updateMatrix();
+						mesh.setMatrixAt(i, dummy.matrix);
+					});
 				}
 
 			} else {

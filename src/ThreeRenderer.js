@@ -76,14 +76,14 @@ export class ThreeRenderer extends Renderer{
 				geom.setAttribute('position', new THREE.BufferAttribute(obj.geometry.vertices, 3));
 				geom.setAttribute('normal', new THREE.BufferAttribute(obj.geometry.normals, 3));
 			}
-			if (obj.instanced) {
+			if (obj.instances) {
 				const { instances } = obj;
 				const mesh = new THREE.InstancedMesh(geom, mat, instances.length);
 				mesh.geometry = geom;
 				obj.threeMesh = mesh;
 				const dummy = new THREE.Object3D();
 
-				instances.forEach((transform, i) => {
+				instances.forEach(({ transform }, i) => {
 					dummy.position.set(...transform.position);
 					dummy.scale.set(...transform.scale);
 					dummy.rotation.set(...transform.rotation);

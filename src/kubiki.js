@@ -100,12 +100,9 @@ export function room(params) {
 	const nextWall = (length) => {
 		const dx = Math.cos(rotation) * length;
 		const dy = Math.sin(rotation) * length;
-		instances[idx] = {
-			position: [x + dx / 2, y + dy / 2, 0],
-			rotation: [0, 0, rotation],
-			scale: [length, room.wallThickness, 1],
-		};
+		instances[idx] = new SceneObject().position(x + dx / 2, y + dy / 2, 0).rotation(0, 0, rotation).scale(length, room.wallThickness, 1);
 		nextPos(length);
+
 		idx++;
 	};
 

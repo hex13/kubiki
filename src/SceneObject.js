@@ -59,8 +59,8 @@ export class SceneObject {
 	computeMatrix() {
 		const matrix = this.transform.matrix;
 		mat4.identity(matrix);
-		mat4.scale(matrix, matrix, this.transform.scale);
 		mat4.translate(matrix, matrix, this.transform.position);
+
 		if (this.transform.target) {
 			const up = [0, 1, 0];
 			mat4.targetTo(matrix, this.transform.position.slice(0, 3), this.transform.target, up);
@@ -69,6 +69,7 @@ export class SceneObject {
 			mat4.rotateY(matrix, matrix, this.transform.rotation[1]);
 			mat4.rotateZ(matrix, matrix, this.transform.rotation[2]);
 		}
+		mat4.scale(matrix, matrix, this.transform.scale);
 	}
 	animate(to, duration) {
 		const from = structuredClone(this.transform);

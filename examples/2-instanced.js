@@ -6,10 +6,10 @@ const box = K.room({
 	wallThickness: 0.2,
 	doorLength: 1,
 	walls: [
-		{doors: [2, 3]},
+		{doors: [3]},
 		{doors: []},
 		{doors: []},
-		{doors: [2.2]},
+		{doors: []},
 	],
 }).position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3)
 	.on('click', () => {
@@ -25,7 +25,7 @@ kubiki.add(K.box());
 
 function update(t) {
 	kubiki.render(t);
-	box.rotation(x => x + 0.001, y => y + 0.001, z => z);
+	box.rotation(x => x + 0.003, y => y + 0.001, z => z);
 	requestAnimationFrame(update);
 }
 

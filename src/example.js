@@ -1,8 +1,25 @@
 import * as K from './kubiki.js';
+import * as THREE from 'three';
 import { LineBuilder } from './LineBuilder.js';
 
 const rect = K.rect().position(-1.4, 0, 0);
-const box = K.box().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3);
+const box = K.instanced().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3);
+
+const room = K.room({
+	width: 6,
+	height: 4,
+	wallThickness: 0.2,
+	doorLength: 1,
+	walls: [
+		{doors: [3]},
+		{doors: []},
+		{doors: []},
+		{doors: []},
+	],
+}).position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3)
+	.on('click', () => {
+		alert('clicked');
+	});
 
 box.on('click', async e => {
 	const pos = [...box.transform.position];
@@ -64,7 +81,8 @@ const kubiki = K.init({
 	})
 	.mount(document.body);
 
-const house = kubiki.load('House.glb');
+// const house = kubiki.load('House.glb');
+const house = K.box();
 
 const dynamic = kubiki.dynamic({
 	foo: (k, v) => {
@@ -93,6 +111,7 @@ kubiki
 	// .add(rect)
 	.add(box)
 	.add(house)
+	.add(room)
 	.add(K.box().color(1.0, 0.4, 0.4).position(3, 0, 0).scale(1, 1, 1).on('click', e => {
 		console.log("xD", e)
 	}))

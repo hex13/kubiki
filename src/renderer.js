@@ -94,9 +94,11 @@ export class WebGLRenderer extends Renderer {
 			const dimensions = 3;
 			const aPosition = gl.getAttribLocation(this.program, 'aPosition');
 			const aNormal = gl.getAttribLocation(this.program, 'aNormal');
+			const aTransform = gl.getAttribLocation(this.program, 'aTransform');
 			const uPosition = gl.getUniformLocation(this.program, 'uPosition');
 			const uTransform = gl.getUniformLocation(this.program, 'uTransform');
 			const uProjection = gl.getUniformLocation(this.program, 'uProjection');
+			const uInstanced = gl.getUniformLocation(this.program, 'uInstanced');
 			const uObjectIndex = gl.getUniformLocation(this.program, 'uObjectIndex');
 			const uView = gl.getUniformLocation(this.program, 'uView');
 			const uColor = gl.getUniformLocation(this.program, 'uColor');
@@ -122,7 +124,37 @@ export class WebGLRenderer extends Renderer {
 				gl.enableVertexAttribArray(aNormal);
 				gl.vertexAttribPointer(aNormal, dimensions, gl.FLOAT, false, 0, 0);
 			}
-			gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
+
+			if (obj.instances) {
+				gl.uniform1i(uInstanced, true);
+				const count = obj.instances.length;
+
+				const aTransformBuffer = gl.createBuffer();
+
+		        gl.bindBuffer(gl.ARRAY_BUFFER, aTransformBuffer );
+		        const bufferData = new Float32Array(16 * count);
+		        for (let instanceIdx = 0; instanceIdx < count; instanceIdx++) {
+					const instance = obj.instances[instanceIdx];
+					instance.computeMatrix();
+					const matrix = instance.transform.matrix;
+					for (let i = 0; i < 16; i++) {
+						bufferData[16 * instanceIdx + i] = matrix[i];
+					}
+		        }
+		        gl.bufferData(gl.ARRAY_BUFFER, bufferData, gl.DYNAMIC_DRAW);
+
+				for (let i = 0; i < 4; i++) {
+		            gl.enableVertexAttribArray(aTransform + i);
+		            gl.vertexAttribPointer(aTransform + i, 4, gl.FLOAT, false, 16 * 4, i * 16);
+		            gl.vertexAttribDivisor(aTransform + i, 1);
+				}
+				gl.drawArraysInstanced(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions, count);
+
+			} else {
+				gl.uniform1i(uInstanced, false);
+				gl.drawArrays(gl.TRIANGLES, 0, obj.geometry.vertices.length / dimensions);
+			}
+
 		});
 	}
 	render() {

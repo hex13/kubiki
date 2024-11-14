@@ -2,19 +2,30 @@ export const vertexShaderSource = `
 precision mediump float;
 attribute vec3 aPosition;
 attribute vec3 aNormal;
+attribute mat4 aTransform;
 
 uniform vec2 uPosition;
 uniform mat4 uTransform;
 uniform mat4 uProjection;
 uniform mat4 uView;
+uniform bool uInstanced;
 
 varying vec3 vPosition;
 varying vec4 vNormal;
 
 void main() {
-	gl_Position = uProjection * uView * uTransform * vec4(aPosition, 1.0);
-	vPosition = aPosition;
-	vNormal = uTransform * vec4(aNormal, 1.0);
+	if (uInstanced) {
+		// instancing
+		gl_Position = uProjection * uView * uTransform * aTransform * vec4(aPosition, 1.0);
+		vPosition = aPosition;
+		vNormal = aTransform * vec4(aNormal, 1.0);
+
+	} else {
+		gl_Position = uProjection * uView * uTransform * vec4(aPosition, 1.0);
+		vPosition = aPosition;
+		vNormal = uTransform * vec4(aNormal, 1.0);
+
+	}
 }
 `;
 

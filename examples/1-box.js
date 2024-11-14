@@ -1,6 +1,6 @@
 import * as K from '../src/kubiki.js';
 
-const box = K.box().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3)
+const box = K.instanced().position(0, -1, 0).scale(2, 2, 2).color(0.3, 1.0, 0.3)
 	.on('click', () => {
 		alert('clicked');
 	});

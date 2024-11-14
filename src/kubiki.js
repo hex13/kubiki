@@ -74,7 +74,7 @@ export function box() {
 
 export function instanced() {
 	const obj = new SceneObject(boxGeometry);
-	obj.instanced = true;
+	// obj.instanced = true;
 	return obj;
 }
 export function room(params) {

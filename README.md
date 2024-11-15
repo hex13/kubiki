@@ -30,10 +30,10 @@ requestAnimationFrame(update)
 - [ ] but it will be possible to configure cameras, lights etc.
 - [x] fluent-interface (jQuery-like)
 - [x] DOM rendering (for e.g. labels)
-- [x] easy adding events 
-- [ ] reactivity out of the box
+- [x] easy adding events
 - [x] utility for creating room geometries (width, height, where are doors, windows...)
+- [x] scene tree (which allows for nesting objects)
+- [ ] reactivity out of the box
+- [ ] utility for areas (SceneObject::findArea)
 - [ ] dev tools
 - [ ] utils for shaders
-
-

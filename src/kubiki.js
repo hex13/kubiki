@@ -191,6 +191,9 @@ class Kubiki {
 	add(obj, parent) {
 		obj.kubiki = this;
 		this.objects.push(obj);
+		if (parent) {
+			obj.parent = parent;
+		}
 		this.renderers.forEach(renderer => renderer.add(obj, parent));
 		return this;
 	}

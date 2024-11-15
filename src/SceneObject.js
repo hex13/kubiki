@@ -59,6 +59,9 @@ export class SceneObject {
 	computeMatrix() {
 		const matrix = this.transform.matrix;
 		mat4.identity(matrix);
+		if (this.parent && this.parent.transform.matrix) {
+			mat4.mul(matrix, matrix, this.parent.transform.matrix);
+		}
 		mat4.translate(matrix, matrix, this.transform.position);
 
 		if (this.transform.target) {

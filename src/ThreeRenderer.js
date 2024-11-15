@@ -65,7 +65,7 @@ export class ThreeRenderer extends Renderer{
 			}
 		});
 	}
-	add(obj) {
+	add(obj, parent) {
 		// if (obj.coords != '3D') return;
 		this.objects.push(obj);
 		let geom;
@@ -99,7 +99,7 @@ export class ThreeRenderer extends Renderer{
 
 		if (obj.threeMesh) {
 			obj.threeMesh.userData.obj = obj;
-			this.scene.add(obj.threeMesh);
+			(parent? parent.threeMesh : this.scene).add(obj.threeMesh);
 		}
 	}
 	remove(obj) {

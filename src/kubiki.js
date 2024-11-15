@@ -188,10 +188,10 @@ class Kubiki {
 
 		this.scheduler = new Scheduler();
 	}
-	add(obj) {
+	add(obj, parent) {
 		obj.kubiki = this;
 		this.objects.push(obj);
-		this.renderers.forEach(renderer => renderer.add(obj));
+		this.renderers.forEach(renderer => renderer.add(obj, parent));
 		return this;
 	}
 	remove(obj) {

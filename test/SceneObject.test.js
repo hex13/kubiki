@@ -17,7 +17,7 @@ describe('SceneObject', () => {
 		});
 		assert.deepStrictEqual(obj.children, []);
 	});
-	it('adding objects', () => {
+	it('adding objects should change .children and .parent', () => {
 		const parent = new SceneObject();
 		const child = new SceneObject();
 
@@ -27,5 +27,23 @@ describe('SceneObject', () => {
 		assert.strictEqual(parent.children[0], child);
 
 		assert.strictEqual(child.parent, parent);
+	});
+
+	it('adding objects should trigger .onAdd() on kubiki', () => {
+		const events = [];
+		const parent = new SceneObject();
+		const child = new SceneObject();
+		parent.kubiki = {
+			onAdd(obj, parent) {
+				events.push(['onAdd', obj, parent]);
+			},
+		};
+
+		parent.add(child);
+		assert.strictEqual(events.length, 1);
+		const call = events[0];
+		assert.strictEqual(call[0], 'onAdd');
+		assert.strictEqual(call[1], child);
+		assert.strictEqual(call[2], parent);
 	});
 });

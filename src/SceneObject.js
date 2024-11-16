@@ -87,6 +87,7 @@ export class SceneObject {
 	add(child) {
 		this.children.push(child);
 		child.parent = this;
+		this.kubiki?.onAdd(child, this);
 	}
 	remove() {
 		this.kubiki.remove(this);

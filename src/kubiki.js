@@ -193,10 +193,13 @@ class Kubiki {
 		this.objects.push(obj);
 
 		if (parent) {
-			parent.add(obj);
+			obj.parent = parent;
 		}
 		this.renderers.forEach(renderer => renderer.add(obj));
 		return this;
+	}
+	onAdd(obj, parent) {
+		this.renderers.forEach(renderer => renderer.add(obj));
 	}
 	remove(obj) {
 		const idx = this.objects.indexOf(obj);

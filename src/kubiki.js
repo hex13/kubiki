@@ -195,7 +195,7 @@ class Kubiki {
 		if (parent) {
 			parent.add(obj);
 		}
-		this.renderers.forEach(renderer => renderer.add(obj, parent));
+		this.renderers.forEach(renderer => renderer.add(obj));
 		return this;
 	}
 	remove(obj) {

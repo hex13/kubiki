@@ -1,5 +1,5 @@
 import { mat4 } from 'gl-matrix';
-import { mix, mixObjects } from 'taska/src/utils';
+import { mix, mixObjects } from 'taska/src/utils.js';
 
 export class SceneObject {
 	kubiki = null;
@@ -14,6 +14,7 @@ export class SceneObject {
 			color: [1.0, 1.0, 1.0],
 		},
 	};
+	children = [];
 	listeners = Object.create(null);
 	constructor(geometry, coordsKind = '3D') {
 		this.geometry = geometry;
@@ -82,6 +83,10 @@ export class SceneObject {
 				this.transform = mixObjects(from, to, a);
 			}
 		});
+	}
+	add(child) {
+		this.children.push(child);
+		child.parent = this;
 	}
 	remove() {
 		this.kubiki.remove(this);

@@ -17,4 +17,15 @@ describe('SceneObject', () => {
 		});
 		assert.deepStrictEqual(obj.children, []);
 	});
+	it('adding objects', () => {
+		const parent = new SceneObject();
+		const child = new SceneObject();
+
+		parent.add(child);
+
+		assert.strictEqual(parent.children.length, 1);
+		assert.strictEqual(parent.children[0], child);
+
+		assert.strictEqual(child.parent, parent);
+	});
 });

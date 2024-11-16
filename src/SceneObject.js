@@ -4,6 +4,7 @@ import { mix, mixObjects } from 'taska/src/utils.js';
 export class SceneObject {
 	kubiki = null;
 	type = '';
+	regions = [];
 	transform = {
 		position: [0, 0, 0, 1],
 		scale: [1, 1, 1],
@@ -91,5 +92,14 @@ export class SceneObject {
 	}
 	remove() {
 		this.kubiki.remove(this);
+	}
+	findRegion([x, y, z]) {
+		return this.regions.find(({ position, size })=> {
+			return (
+				x >= position[0] && x < position[0] + size[0] &&
+				y >= position[1] && y < position[1] + size[1] &&
+				z >= position[2] && z < position[2] + size[2]
+			);
+		}) || null;
 	}
 }

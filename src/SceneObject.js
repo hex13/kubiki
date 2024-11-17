@@ -1,4 +1,4 @@
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import { mix, mixObjects } from 'taska/src/utils.js';
 
 export class SceneObject {
@@ -101,5 +101,9 @@ export class SceneObject {
 				z >= position[2] && z < position[2] + size[2]
 			);
 		}) || null;
+	}
+	localToWorld(v) {
+		this.computeMatrix();
+		return vec3.transformMat4(vec3.create(), v, this.transform.matrix)
 	}
 }

@@ -106,4 +106,9 @@ export class SceneObject {
 		this.computeMatrix();
 		return vec3.transformMat4(vec3.create(), v, this.transform.matrix)
 	}
+	worldToLocal(v) {
+		this.computeMatrix();
+		const inverted = mat4.invert(mat4.create(), this.transform.matrix);
+		return vec3.transformMat4(vec3.create(), v, inverted);
+	}
 }
